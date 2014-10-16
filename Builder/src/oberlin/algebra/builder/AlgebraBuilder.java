@@ -11,15 +11,4 @@ public class AlgebraBuilder extends Builder {
 		this.setScanner(new AlgebraScanner());
 	}
 	
-	@Override
-	public Object build(String code) {
-		List<String> tokens = getScanner().tokenize(code);
-		
-		StringBuilder builder = new StringBuilder();
-		for(String token : tokens) {
-			builder.append(token).append("; ");
-		}
-		return builder.toString();
-	}
-
 }
