@@ -12,10 +12,14 @@ import java.util.regex.*;
  * @author © Michael Eric Oberlin Oct 15, 2014
  *
  */
-class NumericTerm extends Term {
+public class NumericTerm extends Term {
 
 	protected NumericTerm() {
 		this.setRegex(Pattern.compile("^\\d+$"));
+	}
+	
+	public NumericTerm(String code) throws UnparsableException {
+		super(code);
 	}
 	
 	@Override

@@ -12,13 +12,14 @@ public abstract class Builder {
 	public Object build(String code) {
 		List<String> tokens = getScanner().tokenize(code);
 		
+		Object obj = getParser().parse(tokens);
+		System.out.println(obj.getClass() + ": " + obj);
 		
-		
-		StringBuilder builder = new StringBuilder();
+		StringBuilder szBuilder = new StringBuilder();
 		for(String token : tokens) {
-			builder.append(token).append("; ");
+			szBuilder.append(token).append("; ");
 		}
-		return builder.toString();		
+		return szBuilder.toString();		
 	}
 
 	public Scanner getScanner() {

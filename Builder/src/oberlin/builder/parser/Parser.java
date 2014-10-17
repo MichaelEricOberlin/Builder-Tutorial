@@ -25,7 +25,7 @@ public abstract class Parser {
 	 * It's a start.
 	 */
 	
-	List<List<Class<Term>>> orderOfOperations = new LinkedList<>();
+	List<List<Class<? extends Term>>> orderOfOperations = new LinkedList<>();
 	
 	public Object parse(List<String> tokens) {
 		/*
@@ -35,10 +35,10 @@ public abstract class Parser {
 		List<Term> program = new ArrayList<>();
 		
 		for(String token : tokens) {
-			for(List<Class<Term>> opGroup : orderOfOperations) {
+			for(List<Class<? extends Term>> opGroup : orderOfOperations) {
 				boolean found = false;
 				
-				for(Class<Term> op : opGroup) {
+				for(Class<? extends Term> op : opGroup) {
 					try {
 						program.add(op.getConstructor(String.class).newInstance(token));
 					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | NoSuchMethodException
@@ -46,7 +46,7 @@ public abstract class Parser {
 						e.printStackTrace();
 						continue;
 					} catch(InvocationTargetException  e) {
-						//this would be wrapping an UnparsableException, so move on tot he next candidate
+						//this would be wrapping an UnparsableException, so move on to the next candidate
 						continue;
 					}
 				}
@@ -56,6 +56,20 @@ public abstract class Parser {
 		}
 		
 		return program;
+	}
+
+	//GETTERS/SETTERS
+	
+	protected List<List<Class<? extends Term>>> getOrderOfOperations() {
+		return orderOfOperations;
+	}
+
+	protected void setOrderOfOperations(List<List<Class<? extends Term>>> orderOfOperations) {
+		this.orderOfOperations = orderOfOperations;
+	}
+	
+	protected void addOperationList(int order, List<Class<? extends Term>> operationList) {
+		this.getOrderOfOperations().add(order, operationList);
 	}
 
 }

@@ -8,6 +8,6 @@ import oberlin.builder.parser.Term;
  * @author © Michael Eric Oberlin Oct 15, 2014
  *
  */
-class OperatorTerm extends Term {
+public class OperatorTerm extends Term {
 
 }
