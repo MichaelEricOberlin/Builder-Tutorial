@@ -40,6 +40,16 @@ public abstract class Parser {
 		List<Term<?>> program = new ArrayList<>();
 		
 		for(String token : tokens) {
+			/*
+			 * NOTE: This can (and should) be done differently. You're thinking along the lines of the somewhat fixed
+			 * algebraic order-of-ops. Terms are terminal and nonterminal; they provide information on the next
+			 * available term type.
+			 * 
+			 * Go over not a list of lists, but a tree beginning with "Beginning of sentence", and stemming to the
+			 * first entry of each term sequence; then step further out with each term until you reach the end
+			 * of the sentence (greedy, of course). After that, return to "Beginning of sentence" and progress
+			 * forward again, until you get to the end of the code tokens.
+			 */
 			for(List<Class<? extends Term<?>>> opGroup : this.getOrderOfOperations()) {
 				boolean found = false;
 				Logger.getLogger("Builder").log(Level.INFO, "opGroup: " + opGroup);
