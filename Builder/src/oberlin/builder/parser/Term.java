@@ -1,56 +1,22 @@
 package oberlin.builder.parser;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.*;
 
-public abstract class Term {
-	//FIELDS
-	private Pattern regex;
-	private Object data;
-	
-	//CONSTRUCTORS
-	protected Term() {
-		//Initialize regex here
-	}
-	
-	public Term(String token) throws UnparsableException {
-		this();
-		getData(token);
-	}
-	
+public interface Term<E> {
 	//GETTERS/SETTERS	
-	protected Pattern getRegex() {
-		return regex;
-	}
-
-	protected void setRegex(Pattern regex) {
-		this.regex = regex;
-	}
-	
-	protected Object getData() {
-		return data;
-	}
-
-	protected void setData(Object data) {
-		this.data = data;
-	}
+	public E getData();
 
 	//INTRINSIC METHODS
-	/**
-	 * Determines whether the provided token is parsable as this type 
-	 * @param sz code token in question
-	 * @return true if it can be parsed, false otherwise
-	 */
-	private boolean matches(String sz) {
-		return regex.matcher(sz).find();
-	}
 	
 	/**
-	 * Retrieves encoded data from the provided token and encapsulates it in this class.
-	 * @param sz
-	 * @return true if successful
+	 * Check to see if the provided token matches the strictures of this term type. Called on construction,
+	 * not generally necessary to access from outside the class.
 	 * 
-	 * @throws UnparsableException the provided token cannot be parsed as this data type
+	 * @param token the potential match
+	 * @return true if the token matches the term; false otherwise.
 	 */
-	protected abstract boolean getData(String sz) throws UnparsableException;
+	public boolean check(String token);
 	
 }

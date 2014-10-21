@@ -26,19 +26,20 @@ public class Main {
 				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(System.out));) {
 			
 			out.write("Type \"!exit\" to exit the program\n");
-			while(true) {
-				out.write("Enter text: ");
-				out.flush();
-				String input = in.readLine();
-				
-				if(input.trim().toLowerCase().equals("!exit")) {
-					break;
+			String input = "";
+			Object built = null;
+			while(!input.trim().toLowerCase().equals("!exit")) {
+				if(built != null) {
+					out.write("Builds to: " + built);
+					out.newLine();
+					out.flush();
 				}
 				
-				Object built = builder.build(input);
-				out.write("Builds to: " + built);
-				out.newLine();
+				out.write("Enter text: ");
 				out.flush();
+				input = in.readLine();
+				
+				built = builder.build(input);
 			}
 		}
 	}

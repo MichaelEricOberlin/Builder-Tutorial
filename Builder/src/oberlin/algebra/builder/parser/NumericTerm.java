@@ -1,9 +1,10 @@
 package oberlin.algebra.builder.parser;
 
-import oberlin.builder.parser.Term;
-import oberlin.builder.parser.UnparsableException;
+import oberlin.builder.parser.*;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.*;
 
 /**
@@ -12,24 +13,31 @@ import java.util.regex.*;
  * @author © Michael Eric Oberlin Oct 15, 2014
  *
  */
-public class NumericTerm extends Term {
-
-	protected NumericTerm() {
-		this.setRegex(Pattern.compile("^\\d+$"));
-	}
+public class NumericTerm extends AbstractTerm<Double> {
 	
-	public NumericTerm(String code) throws UnparsableException {
-		super(code);
-	}
+	private Double data;
+	private Pattern checkPattern = Pattern.compile("^\\d+\\.?\\d*$");
 	
 	@Override
-	protected boolean getData(String sz) throws UnparsableException {
-		Matcher matcher = this.getRegex().matcher(sz);
-		
-		if(matcher.find()) {
-			this.setData(Integer.parseInt(sz));
-		} else throw new UnparsableException();
-		return false;
+	public Double getData() {
+		return data;
+	}
+
+	@Override
+	public boolean check(String token) {
+		return checkPattern.matcher(token).find();
+	}
+
+	@Override
+	protected Double derive(String token) throws MismatchException {
+		Matcher matcher = checkPattern.matcher(token);
+		matcher.find();
+		return Double.valueOf(matcher.group());
+	}
+
+	@Override
+	protected void setData(Double data) {
+		this.data = data;
 	}
 
 }

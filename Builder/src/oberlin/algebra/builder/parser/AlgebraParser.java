@@ -3,6 +3,8 @@ package oberlin.algebra.builder.parser;
 import oberlin.builder.parser.Parser;
 
 import java.util.*;
+import java.util.logging.Logger;
+
 import oberlin.builder.parser.*;
 import oberlin.algebra.builder.parser.*;
 
