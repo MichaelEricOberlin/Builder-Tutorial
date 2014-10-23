@@ -10,7 +10,7 @@ public abstract class Builder {
 	private Parser parser;
 	
 	public Object build(String code) {
-		List<String> tokens = getScanner().tokenize(code);
+		List<String> tokens = getScanner().scan(code);
 		
 		Object obj = getParser().parse(tokens);
 		System.out.println(obj.getClass() + ": " + obj);

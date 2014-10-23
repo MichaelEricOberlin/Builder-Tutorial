@@ -1,8 +1,9 @@
 package oberlin.builder.scanner;
 
+import java.util.List;
 import java.util.regex.*;
 
-public abstract class AbstractPatternScanner<E> implements PatternScanner<E> {
+public abstract class AbstractPatternScanner<E> implements PatternScanner<E, List<String>> {
 	protected Pattern pattern;
 	
 	public AbstractPatternScanner(Pattern pattern) {

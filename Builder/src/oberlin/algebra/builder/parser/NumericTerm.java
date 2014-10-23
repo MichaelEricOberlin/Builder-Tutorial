@@ -18,6 +18,10 @@ public class NumericTerm extends AbstractTerm<Double> {
 	private Double data;
 	private Pattern checkPattern = Pattern.compile("^\\d+\\.?\\d*$");
 	
+	public NumericTerm(String token) throws MismatchException {
+		super(token);
+	}
+	
 	@Override
 	public Double getData() {
 		return data;

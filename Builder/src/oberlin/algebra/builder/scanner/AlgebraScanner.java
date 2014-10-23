@@ -5,8 +5,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.*;
 
+import oberlin.algebra.builder.scanner.lexemes.EquatorLexeme;
+import oberlin.algebra.builder.scanner.lexemes.LParenLexeme;
+import oberlin.algebra.builder.scanner.lexemes.OperatorLexeme;
+import oberlin.algebra.builder.scanner.lexemes.RParenLexeme;
+import oberlin.algebra.builder.scanner.lexemes.WhitespaceLexeme;
+import oberlin.algebra.builder.scanner.lexemes.WordLexeme;
 import oberlin.builder.*;
 import oberlin.builder.scanner.Scanner;
+import oberlin.builder.scanner.lexeme.AbstractLexeme;
+import oberlin.builder.scanner.lexeme.Lexeme;
 
 /**
  * Simple scanner meant to parse a basic algebraic equation, and simplify it.
@@ -39,13 +47,19 @@ public class AlgebraScanner extends Scanner {
 		List<Pattern> whitespace = getClearables();
 		whitespace.add(Pattern.compile("^\\s*$"));	//just clear all-whitespace strings, and empty strings
 		
-		//add valids grammar patterns
-		List<Pattern> valids = getValids();
-		valids.add(Pattern.compile("^[+-/\\\\\\*\\^]"));
-		valids.add(Pattern.compile("^!?=?[=><]"));
-		valids.add(Pattern.compile("^\\w+"));
-		valids.add(Pattern.compile("^\\s+"));
-		valids.add(Pattern.compile("^[\\(\\)]"));
-		valids.add(Pattern.compile(str));
+		//add lexemes grammar patterns
+		List<Class<? extends Lexeme>> lexemes = getLexemes();
+		lexemes.add(OperatorLexeme.class);
+		lexemes.add(EquatorLexeme.class);
+		lexemes.add(WordLexeme.class);
+		lexemes.add(WhitespaceLexeme.class);
+		lexemes.add(LParenLexeme.class);
+		lexemes.add(RParenLexeme.class);
+		lexemes.add(new AbstractLexeme(){
+
+			@Override
+			public Pattern getPattern() {
+				return Pattern.compile(str);
+			}}.getClass());
 	}
 }

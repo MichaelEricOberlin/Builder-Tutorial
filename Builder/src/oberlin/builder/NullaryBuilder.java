@@ -12,7 +12,7 @@ public class NullaryBuilder extends Builder {
 	
 	@Override
 	public Object build(String code) {
-		List<String> scanned = getScanner().tokenize(code);
+		List<String> scanned = getScanner().scan(code);
 		return code;
 	}
 

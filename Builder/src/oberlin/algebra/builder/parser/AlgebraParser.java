@@ -14,9 +14,9 @@ import oberlin.algebra.builder.parser.*;
  * @author © Michael Eric Oberlin Oct 15, 2014
  *
  */
-public class AlgebraParser extends Parser {
+public class AlgebraParser extends ReflectiveParser {
 	public AlgebraParser() {
-		List<Class<? extends Term>> operationList = new ArrayList<>();
+		List<Class<? extends Term<?>>> operationList = new ArrayList<>();
 		operationList.add(NumericTerm.class);
 		
 		this.addOperationList(0, operationList);

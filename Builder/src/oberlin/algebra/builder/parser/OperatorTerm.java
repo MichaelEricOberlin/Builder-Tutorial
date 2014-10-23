@@ -19,6 +19,10 @@ public class OperatorTerm extends AbstractTerm<OperatorTerm.Operator> {
 		DIVIDE;	//Technically a form of SCALAR_PRODUCT, but here for simplicity
 	}
 	
+	public OperatorTerm(String token) throws MismatchException {
+		super(token);
+	}
+	
 	//FIELDS
 	private Operator data;
 	

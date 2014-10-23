@@ -25,6 +25,10 @@ public class EquatorTerm extends AbstractTerm<EquatorTerm.Equator> {
 	
 	private Pattern checkPattern = Pattern.compile("^!?[=<>]$");
 	
+	public EquatorTerm(String token) throws MismatchException {
+		super(token);
+	}
+	
 	@Override
 	public Equator getData() {
 		return data;

@@ -1,12 +1,19 @@
 package oberlin.builder.scanner;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.*;
 import java.util.stream.Collectors;
 
+import oberlin.builder.parser.MismatchException;
+import oberlin.builder.scanner.lexeme.*;
+import java.util.logging.*;
+
 public abstract class Scanner {
+	
+	private Logger logger = Logger.getLogger("Scanner");
 	
 	//PROTECTED FIELDS
 	//list of comment-identifying patterns, to be removed before parsing
@@ -16,7 +23,8 @@ public abstract class Scanner {
 	//list of items to be completely removed from the list, should they show up (example: usually all-whitespace values)
 	protected ObservableList<Pattern> clearables = new ObservableList<Pattern>(new LinkedList<>());
 	//list of structural parameters for singular items, to pull them apart when everything else is said and done (example: a+, b becomes a, +, b)
-	protected ObservableList<Pattern> valids = new ObservableList<Pattern>(new LinkedList<>());
+	protected ObservableList<Class<? extends Lexeme>> lexemes
+		= new ObservableList<Class<? extends Lexeme>>(new LinkedList<>());
 	
 	//PRIVATE FIELDS
 	private ListChangeObserver delimiterObserver = new ListChangeObserver(){
@@ -24,11 +32,15 @@ public abstract class Scanner {
 		public void hook() {
 			delimiter = generate(getDelimiters());
 		}};
-	private ListChangeObserver validObserver = new ListChangeObserver(){
-		@Override
-		public void hook() {
-			valid = generate(getValids());
-		}};
+//	private ListChangeObserver validObserver = new ListChangeObserver(){
+//		@Override
+//		public void hook() {
+//			/*
+//			 * This is a little different, as lexemes are not simply patterns.
+//			 * Lexemes must independently test for their relevance to a token.
+//			 */
+//			valid = generate(getLexemes());
+//		}};
 	private ListChangeObserver commentObserver = new ListChangeObserver(){
 		@Override
 		public void hook() {
@@ -142,21 +154,21 @@ public abstract class Scanner {
 				}
 				
 				return code;
-			}},
-		validScanner = new AbstractPatternScanner<List<String>>(){
+			}};
+	protected AbstractPatternScanner<List<Lexeme>> validScanner = new AbstractPatternScanner<List<Lexeme>>(){
 
 			@Override
-			public List<String> scan(List<String> code) {
-				// Our final list of properly separated valids strings
-				List<String> separated = new ArrayList<>();
+			public List<Lexeme> scan(List<String> code) {
+				// Our final list of properly separated lexemes strings
+				List<Lexeme> separated = new ArrayList<>();
 
 				// for(String sz : code) {
 				String sz;
 				Iterator<String> iterator = code.iterator();
 
 				try {
-					// list of each valids found for this entry
-					List<String> words = new ArrayList<>();
+					// list of each lexemes found for this entry
+					List<Lexeme> lexem = new ArrayList<>();
 
 					while (iterator.hasNext()) {
 						//get the next entry in the list; if it's empty, just continue and grab the one after that
@@ -173,24 +185,52 @@ public abstract class Scanner {
 							// the throwing of an exception.
 							boolean matched = false;
 							
-							Matcher matcher = valid.matcher(sz);
-							while(matcher.find()) {
-								//if you find something, first, add it to the list of words
-								words.add(matcher.group());
+							Iterator<Class<? extends Lexeme>> lexIterator = getLexemes().iterator();
+							while(lexIterator.hasNext()) {
+								Class<? extends Lexeme> lexType = null;	//Just to keep a tag on what the lexeme type is
+								//(Mostly for the sake of exception handling)
 								
-								//then, cut it out of the string
-								sz = sz.substring(matcher.end());
-								matcher = valid.matcher(sz);
-								matched = true;
-								
-								// then break from the for loop. If sz is now empty,
-								// the do loop will
-								// escape; if it isn't, the pattern check will
-								// begin from the top
-								// and apply to the new (truncated) string.
-								break;
-							}
+								try {
+									Lexeme lex;
+									lexType = lexIterator.next();
+									
+									lex = lexType.getConstructor(String.class).newInstance(sz);
+									//An InvocationTargetException will interrupt us here if the lexeme can't be
+									//instantiated; otherwise, we have a match.
+									
+									//Next, cut it out of the string
+									sz = sz.substring(lex.getCharacterCount());
+									
+									separated.add(lex);
+									matched = true;
+									break;
+								} catch(InvocationTargetException ex) {
+									//Just a mismatch, so continue
+									if(ex.getCause() instanceof MismatchException)
+										continue;
+									else
+										//or not.
+										logger.log(Level.SEVERE, "Invocation exception outside of"
+												+ " expectations occurred.", ex);
+								//If any of these happen, you have a real problem:
+								} catch (InstantiationException | IllegalAccessException | IllegalArgumentException ex) {
+									logger.log(Level.SEVERE, "Reflection exception: ", ex);
+								} catch (NoSuchMethodException ex) {
+									logger.log(Level.SEVERE, "Constructor for Lexeme couldn't be fetched,"
+											+ " check code syntax", ex);
+								} catch(SecurityException ex) {
+									logger.log(Level.SEVERE, "Construction of Lexeme " + lexType + " triggered a " +
+											"SecurityException; probable cause: check to insure that at least one"
+											+ " class loader is shared.", ex);
+								}
 
+							}
+							
+							// If sz is now empty,
+							// the do loop will
+							// escape; if it isn't, the pattern check will
+							// begin from the top
+							// and apply to the new (truncated) string.
 							if (!matched) {
 								Logger.getLogger("Builder").log(Level.WARNING, "Syntax error: " + sz);
 								return separated;
@@ -200,7 +240,7 @@ public abstract class Scanner {
 													// string
 					}
 
-					separated.addAll(words);
+					separated.addAll(lexem);
 
 				} catch (NoSuchElementException ex) {
 					// Just return the empty set.
@@ -220,17 +260,17 @@ public abstract class Scanner {
 	 * Note that it is a private field; there is never any occasion for the outside world to change or even look at its contents. It is
 	 * managed entirely internally, by the Scanner. See setDelimiters(). 
 	 */
-	private Pattern delimiter, comment, clearable, valid;
+	private Pattern delimiter, comment, clearable; 
 	
 	//CONSTRUCTORS
 	public Scanner() {
 		delimiter = generate(getDelimiters());
-		valid = generate(getValids());
+//		valid = generate(getLexemes());
 		comment = generate(getComments());
 		clearable = generate(getClearables());
 		
 		this.delimiters.addObserver(delimiterObserver);
-		this.valids.addObserver(validObserver);
+//		this.lexemes.addObserver(validObserver);
 		this.comments.addObserver(commentObserver);
 		this.clearables.addObserver(clearableObserver);
 	}
@@ -262,34 +302,33 @@ public abstract class Scanner {
 		((ObservableList<Pattern>)clearables).addObserver(clearableObserver);
 	}
 
-	protected List<Pattern> getValids() {
-		return valids;
+	protected List<Class<? extends Lexeme>> getLexemes() {
+		return lexemes;
 	}
 
-	protected void setValids(List<Pattern> valids) {
-		this.valids = new ObservableList<Pattern>(valids);
-		((ObservableList<Pattern>)valids).addObserver(validObserver);
+	protected void setLexemes(List<Class<? extends Lexeme>> lexemes) {
+		this.lexemes = new ObservableList<Class<? extends Lexeme>>(lexemes);
+//		((ObservableList<Lexeme>)lexemes).addObserver(validObserver);
 	}
 
 	// INTRINSIC METHODS
-	public List<String> tokenize(String code) {
+	public List<Lexeme> scan(String code) {
 		//final collection of tokens (after scanning)
 		List<String> ultimate = new ArrayList<>();
 		
 		ultimate.add(code);
 		
 		//This little block is on the border of deserving its own method.
-		List<PatternScanner<List<String>>> scanners = new LinkedList<>();
+		List<PatternScanner<List<String>, List<String>>> scanners = new LinkedList<>();
 		scanners.add(commentScanner);
 		scanners.add(delimiterScanner);
 		scanners.add(clearableScanner);
-		scanners.add(validScanner);
 		
-		for(PatternScanner<List<String>> p : scanners) {
+		for(PatternScanner<List<String>, List<String>> p : scanners) {
 			ultimate = p.scan(ultimate);
 		}
 		
-		return ultimate;
+		return validScanner.scan(ultimate);
 	}
 	
 	private Pattern generate(Collection<Pattern> patterns) {
