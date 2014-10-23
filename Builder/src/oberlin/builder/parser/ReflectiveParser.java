@@ -5,6 +5,8 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import oberlin.builder.scanner.lexeme.Lexeme;
+
 public abstract class ReflectiveParser implements Parser<Object> {
 	
 	/*
@@ -33,12 +35,12 @@ public abstract class ReflectiveParser implements Parser<Object> {
 	 * Technically, parse returns an Abstract Parse Tree, or the equivalent of Swiss Notation for the method calls.
 	 */
 	@Override
-	public Object parse(List<String> tokens) {
+	public Object parse(List<Lexeme> lexemes) {
 		/*
 		 * TODO: Next up, establish items for program that describe the individual object, not
 		 * just the type of object—likely if(type.check(token)) { program.add(new type.instanceClass(token)); }
 		 */
-		List<Term<?>> program = identifyTerms(tokens);
+		List<Term<?>> program = identifyTerms(lexemes);
 		
 		
 		
@@ -46,10 +48,10 @@ public abstract class ReflectiveParser implements Parser<Object> {
 	}
 	
 	@Override
-	public List<Term<?>> identifyTerms(List<String> tokens) {
+	public List<Term<?>> identifyTerms(List<Lexeme> lexemes) {
 		List<Term<?>> program = new ArrayList<>();
 		
-		for(String token : tokens) {
+		for(Lexeme lex : lexemes) {
 			/*
 			 * NOTE: This can (and should) be done differently. You're thinking along the lines of the somewhat fixed
 			 * algebraic order-of-ops. Terms are terminal and nonterminal; they provide information on the next
@@ -67,7 +69,7 @@ public abstract class ReflectiveParser implements Parser<Object> {
 				//TODO: Issue: Class<? extends Term> always defaults to Term, instead of ?.
 				for(Class<? extends Term<?>> op : opGroup) {
 					try {
-						program.add(op.getConstructor(String.class).newInstance(token));
+						program.add(op.getConstructor(String.class).newInstance(lex.toString()));
 					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | NoSuchMethodException
 							| SecurityException e) {
 						e.printStackTrace();

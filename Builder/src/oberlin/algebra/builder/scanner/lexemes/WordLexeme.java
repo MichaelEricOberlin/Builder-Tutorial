@@ -6,7 +6,6 @@ import oberlin.builder.parser.MismatchException;
 import oberlin.builder.scanner.lexeme.AbstractLexeme;
 
 public class WordLexeme extends AbstractLexeme {
-	private final Pattern pattern = Pattern.compile("^\\w+");
 	
 	public WordLexeme(String sz) throws MismatchException {
 		super(sz);
@@ -14,6 +13,7 @@ public class WordLexeme extends AbstractLexeme {
 
 	@Override
 	public Pattern getPattern() {
+		final Pattern pattern = Pattern.compile("^\\w+");
 		return pattern;
 	}
 

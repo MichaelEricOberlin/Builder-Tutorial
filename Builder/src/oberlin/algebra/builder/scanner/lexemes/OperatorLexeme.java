@@ -6,8 +6,6 @@ import oberlin.builder.parser.MismatchException;
 import oberlin.builder.scanner.lexeme.AbstractLexeme;
 
 public class OperatorLexeme extends AbstractLexeme {
-	private final Pattern pattern = Pattern.compile("^[+-/\\\\\\*\\^]");
-	
 	public OperatorLexeme() {
 	}
 
@@ -17,6 +15,7 @@ public class OperatorLexeme extends AbstractLexeme {
 
 	@Override
 	public Pattern getPattern() {
+		final Pattern pattern = Pattern.compile("^[+-/\\\\\\*\\^]");
 		return pattern;
 	}
 

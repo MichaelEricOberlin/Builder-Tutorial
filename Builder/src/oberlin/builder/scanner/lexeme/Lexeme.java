@@ -1,5 +1,7 @@
 package oberlin.builder.scanner.lexeme;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.*;
 
 public interface Lexeme {
@@ -14,6 +16,7 @@ public interface Lexeme {
 	 * @return true if it properly represents this lexeme, false otherwise
 	 */
 	public default boolean matches(String token) {
+		Logger.getAnonymousLogger().log(Level.INFO, this.getClass().toString());
 		return getPattern().matcher(token).find();
 	}
 	

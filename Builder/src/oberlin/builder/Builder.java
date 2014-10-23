@@ -3,6 +3,7 @@ package oberlin.builder;
 import java.util.List;
 
 import oberlin.builder.scanner.*;
+import oberlin.builder.scanner.lexeme.Lexeme;
 import oberlin.builder.parser.*;
 
 public abstract class Builder {
@@ -10,14 +11,14 @@ public abstract class Builder {
 	private Parser parser;
 	
 	public Object build(String code) {
-		List<String> tokens = getScanner().scan(code);
+		List<Lexeme> lexemes = getScanner().scan(code);
 		
-		Object obj = getParser().parse(tokens);
+		Object obj = getParser().parse(lexemes);
 		System.out.println(obj.getClass() + ": " + obj);
 		
 		StringBuilder szBuilder = new StringBuilder();
-		for(String token : tokens) {
-			szBuilder.append(token).append("; ");
+		for(Lexeme lexeme : lexemes) {
+			szBuilder.append(lexeme).append("; ");
 		}
 		return szBuilder.toString();		
 	}

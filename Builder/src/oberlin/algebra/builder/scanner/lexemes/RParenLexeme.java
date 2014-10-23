@@ -7,13 +7,13 @@ import oberlin.builder.scanner.lexeme.AbstractLexeme;
 
 public class RParenLexeme extends AbstractLexeme {
 	
-	private final Pattern pattern = Pattern.compile("^\\)");
 	public RParenLexeme(String sz) throws MismatchException {
 		super(sz);
 	}
 
 	@Override
 	public Pattern getPattern() {
+		final Pattern pattern = Pattern.compile("^\\)");
 		return pattern;
 	}
 

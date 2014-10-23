@@ -7,14 +7,13 @@ import oberlin.builder.scanner.lexeme.AbstractLexeme;
 
 public class EquatorLexeme extends AbstractLexeme {
 	
-	private final Pattern pattern = Pattern.compile("^!?=?[=><]");
-	
 	public EquatorLexeme(String sz) throws MismatchException {
 		super(sz);
 	}
 
 	@Override
 	public Pattern getPattern() {
+		final Pattern pattern = Pattern.compile("^!?=?[=><]");
 		return pattern;
 	}
 

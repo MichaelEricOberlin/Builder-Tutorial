@@ -3,6 +3,7 @@ package oberlin.builder;
 import java.util.*;
 
 import oberlin.builder.scanner.NullaryScanner;
+import oberlin.builder.scanner.lexeme.Lexeme;
 
 public class NullaryBuilder extends Builder {
 	
@@ -12,7 +13,7 @@ public class NullaryBuilder extends Builder {
 	
 	@Override
 	public Object build(String code) {
-		List<String> scanned = getScanner().scan(code);
+		List<Lexeme> scanned = getScanner().scan(code);
 		return code;
 	}
 

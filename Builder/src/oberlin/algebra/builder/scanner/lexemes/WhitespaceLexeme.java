@@ -6,7 +6,6 @@ import oberlin.builder.parser.MismatchException;
 import oberlin.builder.scanner.lexeme.AbstractLexeme;
 
 public class WhitespaceLexeme extends AbstractLexeme {
-	private final Pattern pattern = Pattern.compile("^\\s+");
 	
 	public WhitespaceLexeme(String sz) throws MismatchException {
 		super(sz);
@@ -14,6 +13,7 @@ public class WhitespaceLexeme extends AbstractLexeme {
 
 	@Override
 	public Pattern getPattern() {
+		final Pattern pattern = Pattern.compile("^\\s+");
 		return pattern;
 	}
 
