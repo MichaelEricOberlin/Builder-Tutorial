@@ -11,7 +11,7 @@ import oberlin.builder.BuilderException;
  *
  * @param <E> Material which source program is being compiled into.
  */
-public interface Encoder<E> {
+public interface CodeGenerator<E> {
 	/**
 	 * Constructs object program from properly formatted abstract syntax tree. Presumably, analysis has already
 	 * been done on the source program to ensure its proper formatting.

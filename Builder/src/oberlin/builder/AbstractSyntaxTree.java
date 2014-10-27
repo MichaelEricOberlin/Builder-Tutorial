@@ -11,9 +11,18 @@ package oberlin.builder;
  *
  */
 public class AbstractSyntaxTree {
-
-	public AbstractSyntaxTree() {
-		// TODO Auto-generated constructor stub
+	/**
+	 * Respective token indices for the beginning and end of the application of the AST.
+	 * 
+	 * In other words, if the code file is 1,482 tokens long, but this AST only applies to a section
+	 * of code spanning from token 438 to 642, then positionStart = 438; and positionEnd = 642.
+	 */
+	private final int positionStart, positionEnd;
+	
+	public AbstractSyntaxTree(int start, int end) {
+		//initialize bounds for AST
+		this.positionStart = start;
+		this.positionEnd = end;
 	}
 
 }

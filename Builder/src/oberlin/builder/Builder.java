@@ -6,7 +6,7 @@ import java.util.logging.*;
 import oberlin.builder.scanner.*;
 import oberlin.builder.scanner.lexeme.Lexeme;
 import oberlin.builder.analysis.BulkAnalyzer;
-import oberlin.builder.encoder.Encoder;
+import oberlin.builder.encoder.CodeGenerator;
 import oberlin.builder.parser.*;
 
 public abstract class Builder {
@@ -14,7 +14,7 @@ public abstract class Builder {
 	private Scanner scanner;
 	private Parser parser;
 	private BulkAnalyzer bulkAnalyzer;
-	private Encoder<?> encoder;
+	private CodeGenerator<?> codeGenerator;
 	
 	public Object build(String code) throws BuilderException {
 		List<Lexeme> lexemes = getScanner().scan(code);
@@ -39,7 +39,7 @@ public abstract class Builder {
 			System.exit(0);
 		}
 		
-		Object objectProgram = encoder.encode(ast);
+		Object objectProgram = codeGenerator.encode(ast);
 		
 //		return objectProgram;
 		
