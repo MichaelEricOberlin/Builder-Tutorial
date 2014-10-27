@@ -52,9 +52,14 @@ public class AlgebraScanner extends Scanner {
 		lexemes.add(OperatorLexeme.class);
 		lexemes.add(EquatorLexeme.class);
 		lexemes.add(WordLexeme.class);
-		lexemes.add(WhitespaceLexeme.class);
+		
 		lexemes.add(LParenLexeme.class);
 		lexemes.add(RParenLexeme.class);
+		
+		//Purely for the sake of example:
+		lexemes.add(WhitespaceLexeme.class);
+		
+		//Again, purely for the sake of example (of how you would capture a string):
 		lexemes.add(new AbstractLexeme(){
 
 			@Override
