@@ -155,12 +155,22 @@ public abstract class Scanner {
 				
 				return code;
 			}};
-	protected AbstractPatternScanner<List<Lexeme>> validScanner = new AbstractPatternScanner<List<Lexeme>>(){
-
+	protected AbstractPatternScanner<List<String>> validScanner = new AbstractPatternScanner<List<String>>(){
+		
+		/*
+		 * NOTE: This could be more efficient if we got around the reflection part. Consider an enumeration?
+		 */
+		/*
+		 * TODO: You screwed up here. Forgot the separation of Parser and Scanner. Review it. (non-Javadoc)
+		 * @see oberlin.builder.scanner.PatternScanner#scan(java.lang.Object)
+		 */
 			@Override
-			public List<Lexeme> scan(List<String> code) {
+			public List<String> scan(List<String> code) {
+				//NOTE: The only purpose for this is to separate recognized valid tokens, not to examing their
+				//meaning. That is Parser's job.
+				
 				// Our final list of properly separated lexemes strings
-				List<Lexeme> separated = new ArrayList<>();
+				List<String> separated = new ArrayList<>();
 
 				// for(String sz : code) {
 				String sz;
@@ -168,7 +178,7 @@ public abstract class Scanner {
 
 				try {
 					// list of each lexemes found for this entry
-					List<Lexeme> lexem = new ArrayList<>();
+					List<String> lexMatch = new ArrayList<>();
 
 					while (iterator.hasNext()) {
 						//get the next entry in the list; if it's empty, just continue and grab the one after that
@@ -201,7 +211,7 @@ public abstract class Scanner {
 									//Next, cut it out of the string
 									sz = sz.substring(lex.getCharacterCount());
 									
-									separated.add(lex);
+									separated.add(sz);
 									matched = true;
 									break;
 								} catch(InvocationTargetException ex) {
@@ -240,7 +250,7 @@ public abstract class Scanner {
 													// string
 					}
 
-					separated.addAll(lexem);
+					separated.addAll(lexMatch);
 
 				} catch (NoSuchElementException ex) {
 					// Just return the empty set.
@@ -312,7 +322,7 @@ public abstract class Scanner {
 	}
 
 	// INTRINSIC METHODS
-	public List<Lexeme> scan(String code) {
+	public List<String> scan(String code) {
 		//final collection of tokens (after scanning)
 		List<String> ultimate = new ArrayList<>();
 		

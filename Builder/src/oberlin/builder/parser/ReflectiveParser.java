@@ -30,8 +30,6 @@ public abstract class ReflectiveParser implements Parser {
 	 * It's a start.
 	 */
 	
-	List<List<Class<? extends Term<?>>>> orderOfOperations = new LinkedList<>();
-	
 	/*
 	 * Technically, parse returns an Abstract Parse Tree, or the equivalent of Swiss Notation for the method calls.
 	 */
@@ -89,17 +87,5 @@ public abstract class ReflectiveParser implements Parser {
 	}
 
 	//GETTERS/SETTERS
-	
-	protected List<List<Class<? extends Term<?>>>> getOrderOfOperations() {
-		return orderOfOperations;
-	}
-
-	protected void setOrderOfOperations(List<List<Class<? extends Term<?>>>> orderOfOperations) {
-		this.orderOfOperations = orderOfOperations;
-	}
-	
-	protected void addOperationList(int order, List<Class<? extends Term<?>>> operationList) {
-		this.getOrderOfOperations().add(order, operationList);
-	}
 
 }

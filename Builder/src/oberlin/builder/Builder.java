@@ -17,9 +17,9 @@ public abstract class Builder {
 	private CodeGenerator<?> codeGenerator;
 	
 	public Object build(String code) throws BuilderException {
-		List<Lexeme> lexemes = getScanner().scan(code);
+		List<String> tokens = getScanner().scan(code);
 		
-		AbstractSyntaxTree ast = getParser().parse(lexemes);
+		AbstractSyntaxTree ast = getParser().parse(tokens);
 		
 		try {
 			//Analyze code, check for malformed-program exceptions.
@@ -48,8 +48,8 @@ public abstract class Builder {
 		System.out.println(ast.getClass() + ": " + ast);
 		
 		StringBuilder szBuilder = new StringBuilder();
-		for(Lexeme lexeme : lexemes) {
-			szBuilder.append(lexeme).append("; ");
+		for(String token : tokens) {
+			szBuilder.append(token).append("; ");
 		}
 		return szBuilder.toString();
 		

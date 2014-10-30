@@ -2,6 +2,10 @@ package oberlin.builder.parser;
 
 import oberlin.builder.scanner.lexeme.Lexeme;
 
+/*
+ * The remaining concern for Symbol is whether it is terminal or nonterminal. Unfortunately, the symbol itself
+ * does not contain the data to know this, it must be derived during the search.
+ */
 public abstract class Symbol {
 	private String token;
 	
@@ -21,4 +25,5 @@ public abstract class Symbol {
 	}
 	
 	protected abstract Lexeme getLexeme();
+	
 }
