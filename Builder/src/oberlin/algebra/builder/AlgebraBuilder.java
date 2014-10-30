@@ -10,7 +10,7 @@ public class AlgebraBuilder extends Builder {
 	
 	public AlgebraBuilder() {
 		this.setScanner(new AlgebraScanner());
-		this.setParser(new AlgebraParser());
+//		this.setParser(new AlgebraParser());
 	}
 	
 }

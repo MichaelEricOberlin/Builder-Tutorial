@@ -5,9 +5,10 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import oberlin.builder.AbstractSyntaxTree;
 import oberlin.builder.scanner.lexeme.Lexeme;
 
-public abstract class ReflectiveParser implements Parser<Object> {
+public abstract class ReflectiveParser implements Parser {
 	
 	/*
 	 * Keep a collection of SemanticTypes, but remember that there must be an order-of-operation
@@ -35,12 +36,12 @@ public abstract class ReflectiveParser implements Parser<Object> {
 	 * Technically, parse returns an Abstract Parse Tree, or the equivalent of Swiss Notation for the method calls.
 	 */
 	@Override
-	public Object parse(List<Lexeme> lexemes) {
+	public AbstractSyntaxTree parse(List<Lexeme> lexemes) {
 		/*
 		 * TODO: Next up, establish items for program that describe the individual object, not
 		 * just the type of object—likely if(type.check(token)) { program.add(new type.instanceClass(token)); }
 		 */
-		List<Term<?>> program = identifyTerms(lexemes);
+		AbstractSyntaxTree program = buildSymbolList(lexemes);
 		
 		
 		
@@ -48,7 +49,7 @@ public abstract class ReflectiveParser implements Parser<Object> {
 	}
 	
 	@Override
-	public List<Term<?>> identifyTerms(List<Lexeme> lexemes) {
+	public List<Term<?>> buildSymbolList(List<Lexeme> lexemes) {
 		List<Term<?>> program = new ArrayList<>();
 		
 		for(Lexeme lex : lexemes) {

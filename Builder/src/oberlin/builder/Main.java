@@ -17,11 +17,11 @@ public class Main {
 //	private Builder oberlin.builder = new NullaryBuilder();
 	private Builder builder = new AlgebraBuilder();
 	
-	public static void main(String...args) throws IOException {
+	public static void main(String...args) throws IOException, BuilderException {
 		new Main();
 	}
 	
-	public Main() throws IOException {
+	public Main() throws IOException, BuilderException {
 		try(BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(System.out));) {
 			
