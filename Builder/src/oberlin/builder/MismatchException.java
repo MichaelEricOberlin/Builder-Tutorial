@@ -1,4 +1,6 @@
-package oberlin.builder.parser;
+package oberlin.builder;
+
+import oberlin.builder.parser.ParserException;
 
 public class MismatchException extends ParserException {
 

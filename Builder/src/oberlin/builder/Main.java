@@ -10,12 +10,13 @@ package oberlin.builder;
 import java.io.*;
 import java.util.*;
 
-import oberlin.algebra.builder.AlgebraBuilder;
+import oberlin.algebra.builder.*;
+import oberlin.algebra.builder.scanner.*;
 
 public class Main {
 	
-//	private Builder oberlin.builder = new NullaryBuilder();
-	private Builder builder = new AlgebraBuilder();
+//	private Builder builder = new NullaryBuilder();
+	private Builder builder = new AlgebraicBuilder();
 	
 	public static void main(String...args) throws IOException, BuilderException {
 		new Main();

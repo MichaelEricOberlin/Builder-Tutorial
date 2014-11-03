@@ -1,358 +1,75 @@
 package oberlin.builder.scanner;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.*;
-import java.util.stream.Collectors;
-
-import oberlin.builder.parser.MismatchException;
-import oberlin.builder.scanner.lexeme.*;
+import java.util.function.*;
 import java.util.logging.*;
 
-public abstract class Scanner {
-	
-	private Logger logger = Logger.getLogger("Scanner");
-	
-	//PROTECTED FIELDS
-	//list of comment-identifying patterns, to be removed before parsing
-	protected ObservableList<Pattern> comments = new ObservableList<Pattern>(new LinkedList<>());
-	//list of delimiter-specifying patterns, to be read within
-	protected ObservableList<Pattern> delimiters = new ObservableList<Pattern>(new LinkedList<>());
-	//list of items to be completely removed from the list, should they show up (example: usually all-whitespace values)
-	protected ObservableList<Pattern> clearables = new ObservableList<Pattern>(new LinkedList<>());
-	//list of structural parameters for singular items, to pull them apart when everything else is said and done (example: a+, b becomes a, +, b)
-	protected ObservableList<Class<? extends Lexeme>> lexemes
-		= new ObservableList<Class<? extends Lexeme>>(new LinkedList<>());
-	
-	//PRIVATE FIELDS
-	private ListChangeObserver delimiterObserver = new ListChangeObserver(){
-		@Override
-		public void hook() {
-			delimiter = generate(getDelimiters());
-		}};
-//	private ListChangeObserver validObserver = new ListChangeObserver(){
-//		@Override
-//		public void hook() {
-//			/*
-//			 * This is a little different, as lexemes are not simply patterns.
-//			 * Lexemes must independently test for their relevance to a token.
-//			 */
-//			valid = generate(getLexemes());
-//		}};
-	private ListChangeObserver commentObserver = new ListChangeObserver(){
-		@Override
-		public void hook() {
-			comment = generate(getComments());
-		}};
-	private ListChangeObserver clearableObserver = new ListChangeObserver(){
-		@Override
-		public void hook() {
-			clearable = generate(getClearables());
-		}};
+import oberlin.builder.*;
+
+/**
+ * New design for scanners. Requires an enumeration of type Grammar to iterate over, and a code string.
+ * Returns a list of tokens.
+ * 
+ * @author © Michael Eric Oberlin Nov 2, 2014
+ *
+ */
+public interface Scanner<E extends Enum<E> & Grammar> extends Function<String, List<String>> {
+	@Override
+	public default List<String> apply(String code) {
+		Logger logger = Logger.getLogger("Scanner");
 		
-	protected AbstractPatternScanner<List<String>> commentScanner = new AbstractPatternScanner<List<String>>() {
-
-		/**
-		 * Finds all declared comment patterns in parameter string, and removes them
-		 * 
-		 * @param code
-		 *            the unaltered code string
-		 * @return the original string, minus any comment patterns
-		 */
-		@Override
-		public List<String> scan(List<String> code) {
-			List<String> uncommented = new ArrayList<>();
-			
-			for(String sz : code) {
-				Matcher matcher = comment.matcher(sz);
-				
-				while(matcher.find()) {
-					sz = matcher.replaceAll("");
-				}
-				
-				uncommented.add(sz);
-			}
-			
-			return uncommented;
-		}
-
-	};
-	protected AbstractPatternScanner<List<String>>	delimiterScanner = new AbstractPatternScanner<List<String>>() {
-
-		/**
-		 * Splits code into a new list, with divisions added for each declared
-		 * delimiter. As an example, if parentheses are delimiters, and spaces are
-		 * delimiters, then {a, +, b, -, (c * d)} would become {a, +, b, -, (, c, *,
-		 * d, )}.
-		 * 
-		 * @param code
-		 *            original list
-		 * @return new list, properly divided along each delimiter.
-		 */
-		@Override
-		public List<String> scan(List<String> code) {
-			// current/active collection of tokens
-			List<String> tokens = new ArrayList<>();
-			
-			for(String sz : code) {
-				Matcher matcher = delimiter.matcher(sz);
-				
-				int start = 0;
-				int end = 0;
-				while(matcher.find()) {
-					
-					//handle anything between the delimiter sets first
-					end = matcher.start();
-					String between = sz.substring(start, end);
-					
-					if(between.length() > 0)
-						tokens.add(between);
-					
-					//next, add the internals
-					tokens.add(matcher.group(1));
-					tokens.add(matcher.group(2));
-					tokens.add(matcher.group(3));
-					start = matcher.end();
-				}
-				
-			}
-			
-			code.clear();
-			code.addAll(tokens);
-			tokens.clear();
-
-			return code;
-		}
+		//Start with a list of tokens, with the singular pre-token of the bulk of code
+		List<String> tokens = new LinkedList<>();
+		tokens.add(code);
 		
-	},
-		clearableScanner = new AbstractPatternScanner<List<String>>(){
-
-			@Override
-			public List<String> scan(List<String> code) {
-				/*
-				 * If you haven't seen this logic style before:
-				 * 
-				 * The issue with most loops is that after an item is removed from a
-				 * List, every item following it has its location automatically
-				 * decremented. Thus, this solution is to page through it explicitly
-				 * by index, not just by value. When a match is found, remove it
-				 * from the list, then DECREMENT the index, to account for the shift
-				 * of every value after that point.
-				 * 
-				 * Eventually, index and size catch up to each other, and the
-				 * program pointer breaks from the loop.
-				 */
-				for (int i = 0; i < code.size(); i++) {
-					String sz = code.get(i);
-					Matcher matcher = clearable.matcher(sz);
-					if (matcher.find()) {
-						code.remove(i);
-						i--;
-					}
-				}
+		//For each item found in the code, parse it, and replace the contents of tokens with the parsed contents
+		for(int index = 0; index < tokens.size(); index++) {
+			//maintain for check
+			String origToken = tokens.get(index);
+			
+			List<String> newTokens = new ArrayList<>();
+			for(Grammar grammar : getGrammar().getEnumConstants()) {
 				
-				return code;
-			}};
-	protected AbstractPatternScanner<List<String>> validScanner = new AbstractPatternScanner<List<String>>(){
-		
-		/*
-		 * NOTE: This could be more efficient if we got around the reflection part. Consider an enumeration?
-		 */
-		/*
-		 * TODO: You screwed up here. Forgot the separation of Parser and Scanner. Review it. (non-Javadoc)
-		 * @see oberlin.builder.scanner.PatternScanner#scan(java.lang.Object)
-		 */
-			@Override
-			public List<String> scan(List<String> code) {
-				//NOTE: The only purpose for this is to separate recognized valid tokens, not to examing their
-				//meaning. That is Parser's job.
-				
-				// Our final list of properly separated lexemes strings
-				List<String> separated = new ArrayList<>();
-
-				// for(String sz : code) {
-				String sz;
-				Iterator<String> iterator = code.iterator();
-
 				try {
-					// list of each lexemes found for this entry
-					List<String> lexMatch = new ArrayList<>();
-
-					while (iterator.hasNext()) {
-						//get the next entry in the list; if it's empty, just continue and grab the one after that
-						sz = iterator.next();
-						if(sz.length() == 0) continue;
-						
-						do {
-							// for the sake of catching items that simply don't match
-							// our specified grammar,
-							// keep a boolean around to test after the for loop breaks.
-							// Set it to true if
-							// an item is found, leave it as false if one is not; use
-							// its value to determine
-							// the throwing of an exception.
-							boolean matched = false;
-							
-							Iterator<Class<? extends Lexeme>> lexIterator = getLexemes().iterator();
-							while(lexIterator.hasNext()) {
-								Class<? extends Lexeme> lexType = null;	//Just to keep a tag on what the lexeme type is
-								//(Mostly for the sake of exception handling)
-								
-								try {
-									Lexeme lex;
-									lexType = lexIterator.next();
-									
-									lex = lexType.getConstructor(String.class).newInstance(sz);
-									//An InvocationTargetException will interrupt us here if the lexeme can't be
-									//instantiated; otherwise, we have a match.
-									
-									//Next, cut it out of the string
-									sz = sz.substring(lex.getCharacterCount());
-									
-									separated.add(sz);
-									matched = true;
-									break;
-								} catch(InvocationTargetException ex) {
-									//Just a mismatch, so continue
-									if(ex.getCause() instanceof MismatchException)
-										continue;
-									else
-										//or not.
-										logger.log(Level.SEVERE, "Invocation exception outside of"
-												+ " expectations occurred.", ex);
-								//If any of these happen, you have a real problem:
-								} catch (InstantiationException | IllegalAccessException | IllegalArgumentException ex) {
-									logger.log(Level.SEVERE, "Reflection exception: ", ex);
-								} catch (NoSuchMethodException ex) {
-									logger.log(Level.SEVERE, "Constructor for Lexeme couldn't be fetched,"
-											+ " check code syntax", ex);
-								} catch(SecurityException ex) {
-									logger.log(Level.SEVERE, "Construction of Lexeme " + lexType + " triggered a " +
-											"SecurityException; probable cause: check to insure that at least one"
-											+ " class loader is shared.", ex);
-								}
-
-							}
-							
-							// If sz is now empty,
-							// the do loop will
-							// escape; if it isn't, the pattern check will
-							// begin from the top
-							// and apply to the new (truncated) string.
-							if (!matched) {
-								Logger.getLogger("Builder").log(Level.WARNING, "Syntax error: " + sz);
-								return separated;
-							}
-
-						} while (!sz.isEmpty()); // do this until nothing is left in the
-													// string
-					}
-
-					separated.addAll(lexMatch);
-
-				} catch (NoSuchElementException ex) {
-					// Just return the empty set.
+					newTokens.addAll(grammar.matchToken(tokens.get(index)));
+					
+					replaceItemWithCollection(tokens, index, newTokens);
+					break;
+				} catch (MismatchException e) {
+					//didn't match, so continue to the next item
+					continue;
 				}
-
-				return separated;
-			}};
-	
-	
-	
-	/*
-	 * These guys are interesting. Delimiter is a constructed pattern from every item in delimiters; so that the scan can be done with a single
-	 * regular expression instead of an iteration over a collection of them. For single-file builders that aren't frequently in use, this might
-	 * seem small; but if you're dealing with interpreting something like HTTP, being able to complete many builds per second is of great
-	 * import, and this shortcut will come in handy.
-	 * 
-	 * Note that it is a private field; there is never any occasion for the outside world to change or even look at its contents. It is
-	 * managed entirely internally, by the Scanner. See setDelimiters(). 
-	 */
-	private Pattern delimiter, comment, clearable; 
-	
-	//CONSTRUCTORS
-	public Scanner() {
-		delimiter = generate(getDelimiters());
-//		valid = generate(getLexemes());
-		comment = generate(getComments());
-		clearable = generate(getClearables());
-		
-		this.delimiters.addObserver(delimiterObserver);
-//		this.lexemes.addObserver(validObserver);
-		this.comments.addObserver(commentObserver);
-		this.clearables.addObserver(clearableObserver);
-	}
-	
-	protected List<Pattern> getComments() {
-		return comments;
-	}
-
-	protected void setComments(List<Pattern> comments) {
-		this.comments = new ObservableList<Pattern>(comments);
-		((ObservableList<Pattern>)comments).addObserver(commentObserver);
-	}
-
-	protected List<Pattern> getDelimiters() {
-		return delimiters;
-	}
-
-	protected void setDelimiters(List<Pattern> delimiters) {
-		this.delimiters = new ObservableList<Pattern>(delimiters);
-		((ObservableList<Pattern>)delimiters).addObserver(delimiterObserver);
-	}
-
-	protected List<Pattern> getClearables() {
-		return clearables;
-	}
-
-	protected void setClearables(List<Pattern> clearables) {
-		this.clearables = new ObservableList<Pattern>(clearables);
-		((ObservableList<Pattern>)clearables).addObserver(clearableObserver);
-	}
-
-	protected List<Class<? extends Lexeme>> getLexemes() {
-		return lexemes;
-	}
-
-	protected void setLexemes(List<Class<? extends Lexeme>> lexemes) {
-		this.lexemes = new ObservableList<Class<? extends Lexeme>>(lexemes);
-//		((ObservableList<Lexeme>)lexemes).addObserver(validObserver);
-	}
-
-	// INTRINSIC METHODS
-	public List<String> scan(String code) {
-		//final collection of tokens (after scanning)
-		List<String> ultimate = new ArrayList<>();
-		
-		ultimate.add(code);
-		
-		//This little block is on the border of deserving its own method.
-		List<PatternScanner<List<String>, List<String>>> scanners = new LinkedList<>();
-		scanners.add(commentScanner);
-		scanners.add(delimiterScanner);
-		scanners.add(clearableScanner);
-		
-		for(PatternScanner<List<String>, List<String>> p : scanners) {
-			ultimate = p.scan(ultimate);
-		}
-		
-		return validScanner.scan(ultimate);
-	}
-	
-	private Pattern generate(Collection<Pattern> patterns) {
-		StringBuilder builder = new StringBuilder();
-		
-		Iterator<Pattern> iterator = patterns.iterator();
-		
-		while(iterator.hasNext()) {
-			builder.append(iterator.next().pattern());
+			}
 			
-			if(iterator.hasNext()) builder.append("|");
+			//Final defensive check: if one token was received, and one token provided, and
+			//the old is not the same as the new, then the only thing that happened was the
+			//removal of irrelevant data. Thus, index should be decremented so that this new
+			//item may be scanned again.
+			if(newTokens.size() == 1 && !newTokens.get(0).equals(origToken)) index--;
 		}
 		
-		return Pattern.compile(builder.toString());
+		//This algorithm will always terminate the token list with an empty token, the one item
+		//which cannot have semantic value. So, remove it here.
+		tokens.remove(tokens.size() - 1);
+		
+		return tokens;
 	}
-
+	
+	/**
+	 * Internally used method which replaces an entry in a provided list with a collection.
+	 * 
+	 * @param list list to be altered
+	 * @param entry numeric index of replaced entry
+	 * @param replacement item to insert in place of current data
+	 */
+	static <E> void replaceItemWithCollection(List<E> list, int entry, Collection<E> replacement) {
+		list.remove(entry);
+		list.addAll(entry, replacement);
+	}
+	
+	/**
+	 * 
+	 * @return Grammar allocated to token recognition.
+	 */
+	public Class<E> getGrammar();
 }

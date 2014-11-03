@@ -2,14 +2,17 @@ package oberlin.builder.scanner;
 
 import java.util.*;
 
-import oberlin.builder.scanner.lexeme.Lexeme;
-
-public class NullaryScanner extends Scanner {
+public class NullaryScanner implements Scanner<NullaryGrammar> {
 
 	@Override
-	public List<String> scan(String code) {
+	public List<String> apply(String code) {
 		List<String> list = new ArrayList<String>();
 		return list;
+	}
+
+	@Override
+	public Class<NullaryGrammar> getGrammar() {
+		return NullaryGrammar.class;
 	}
 
 }

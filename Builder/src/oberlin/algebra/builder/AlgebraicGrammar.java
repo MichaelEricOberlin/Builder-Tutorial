@@ -1,0 +1,76 @@
+package oberlin.algebra.builder;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import oberlin.builder.Grammar;
+
+public enum AlgebraicGrammar implements Grammar {
+		//COMMENTS
+		WHITESPACE(Pattern.compile("^\\s+"), GrammarType.COMMENT),
+		BLOCK_COMMENT(Pattern.compile("^/\\*.*?\\*/"), GrammarType.COMMENT),
+		LINE_COMMENT(Pattern.compile("^//.*+$"), GrammarType.COMMENT),
+		
+		//VALIDS
+		NOMINAL(Pattern.compile("^\\w+"), GrammarType.KEEP),
+		NUMERIC(Pattern.compile("^\\d+"), GrammarType.KEEP),
+		OPERATOR(Pattern.compile("^[+-/\\\\÷\\*×\\^]"), GrammarType.KEEP),
+		EQUATOR(Pattern.compile("^!?=?[=><]"), GrammarType.KEEP),
+		
+		//DELIMITERS
+		LPAREN(Pattern.compile("^\\("), GrammarType.KEEP),
+		RPAREN(Pattern.compile("^\\)"), GrammarType.KEEP);
+	;
+	
+	//PRIVATE FIELDS
+	private Logger logger = Logger.getLogger("AlgebraicGrammar");
+	
+	//ENUMERATIONS
+	private enum GrammarType {
+		KEEP,
+		COMMENT;
+	}
+	
+	//FIELDS
+	private final Pattern pattern;
+	private final GrammarType type;
+	
+	//CONSTRUCTORS
+	/**
+	 * The two underlying details for any syntax pattern are its regular expression, and its semantic meaning.
+	 * The pattern is simply a compiled regular expression for matching the item. The type is a clue to its
+	 * semantic meaning, which is checked in a switch-case statement when called.
+	 * 
+	 * @param pattern compiled regular expression identifying the token
+	 * @param type clue as to what should be done with the token once found
+	 */
+	private AlgebraicGrammar(Pattern pattern, GrammarType type) {
+		this.pattern = pattern;
+		this.type = type;
+	}
+	
+	//GETTERS/SETTERS
+	@Override
+	public Pattern getPattern() {
+		return pattern;
+	}
+
+	@Override
+	public List<String> manageToken(Matcher matcher) {
+		List<String> ret = new LinkedList<>();
+		switch(this.type) {
+		case KEEP:
+			ret.add(matcher.group());
+			break;
+		case COMMENT:
+			//Just ignore it
+			break;
+		}
+		return ret;
+	}
+
+}
