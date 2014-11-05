@@ -5,6 +5,7 @@ import java.util.function.*;
 import java.util.logging.*;
 
 import oberlin.builder.*;
+import oberlin.builder.parser.ast.*;
 
 /**
  * New design for scanners. Requires an enumeration of type Grammar to iterate over, and a code string.
@@ -13,21 +14,21 @@ import oberlin.builder.*;
  * @author © Michael Eric Oberlin Nov 2, 2014
  *
  */
-public interface Scanner<E extends Enum<E> & Grammar> extends Function<String, List<String>> {
+public interface Scanner<E extends Enum<E> & Grammar> extends Function<AST, List<AST>> {
 	@Override
-	public default List<String> apply(String code) {
+	public default List<AST> apply(AST code) {
 		Logger logger = Logger.getLogger("Scanner");
 		
 		//Start with a list of tokens, with the singular pre-token of the bulk of code
-		List<String> tokens = new LinkedList<>();
+		List<AST> tokens = new LinkedList<>();
 		tokens.add(code);
 		
 		//For each item found in the code, parse it, and replace the contents of tokens with the parsed contents
 		for(int index = 0; index < tokens.size(); index++) {
 			//maintain for check
-			String origToken = tokens.get(index);
+			AST origToken = tokens.get(index);
 			
-			List<String> newTokens = new ArrayList<>();
+			List<AST> newTokens = new ArrayList<>();
 			for(Grammar grammar : getGrammar().getEnumConstants()) {
 				
 				try {

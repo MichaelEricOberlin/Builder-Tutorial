@@ -4,18 +4,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.*;
 
+import oberlin.builder.parser.ast.*;
+
 public interface Grammar {
 	
-	public default List<String> matchToken(String sz) throws MismatchException {
-		List<String> returnable = new LinkedList<>();
+	public default List<AST> matchToken(AST ast) throws MismatchException {
+		List<AST> returnable = new LinkedList<>();
 		
 		Pattern pattern = getPattern();
-		Matcher matcher = pattern.matcher(sz);
+		Matcher matcher = pattern.matcher(ast.toString());
 		if(matcher.find()) {
 			returnable.addAll(manageToken(matcher));
-			returnable.add(sz.substring(matcher.end()));
+			returnable.add(new Terminal(ast.toString().substring(matcher.end())));
 			return returnable;
-		} else throw new MismatchException("String \"" + sz + "\" does not match grammar pattern + \"" + pattern + "\"");
+		} else throw new MismatchException("String \"" + ast + "\" does not match grammar pattern + \"" + pattern + "\"");
 	}
 	
 	public Pattern getPattern();
@@ -26,5 +28,5 @@ public interface Grammar {
 	 * @param token the original token removed from the complete String by matchToken
 	 * @return appropriate value given the circumstances and implementation of Grammar.
 	 */
-	public List<String> manageToken(Matcher matcher);
+	public List<AST> manageToken(Matcher matcher);
 }

@@ -8,6 +8,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import oberlin.builder.Grammar;
+import oberlin.builder.Terminal;
+import oberlin.builder.parser.ast.AST;
 
 public enum AlgebraicGrammar implements Grammar {
 		//COMMENTS
@@ -60,11 +62,11 @@ public enum AlgebraicGrammar implements Grammar {
 	}
 
 	@Override
-	public List<String> manageToken(Matcher matcher) {
-		List<String> ret = new LinkedList<>();
+	public List<AST> manageToken(Matcher matcher) {
+		List<AST> ret = new LinkedList<>();
 		switch(this.type) {
 		case KEEP:
-			ret.add(matcher.group());
+			ret.add(new Terminal(matcher.group()));
 			break;
 		case COMMENT:
 			//Just ignore it

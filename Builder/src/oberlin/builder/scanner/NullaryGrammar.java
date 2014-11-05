@@ -6,6 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import oberlin.builder.Grammar;
+import oberlin.builder.Terminal;
+import oberlin.builder.parser.ast.AST;
 
 public enum NullaryGrammar implements Grammar {
 	ANY;
@@ -17,9 +19,9 @@ public enum NullaryGrammar implements Grammar {
 	}
 
 	@Override
-	public List<String> manageToken(Matcher matcher) {
-		List<String> returnable = new ArrayList<>();
-		returnable.add(matcher.group());
+	public List<AST> manageToken(Matcher matcher) {
+		List<AST> returnable = new ArrayList<>();
+		returnable.add(new Terminal(matcher.group()));
 		return returnable;
 	}
 

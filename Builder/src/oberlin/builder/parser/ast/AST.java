@@ -13,11 +13,9 @@ public abstract class AST implements Element {
 	/**
 	 * Indices of beginning and ending tokens in program.
 	 */
-	private final Position position;
 	private RuntimeEntity entity;
 	
-	public AST(Position position) {
-		this.position = position;
+	public AST() {
 		entity = null;
 	}
 }

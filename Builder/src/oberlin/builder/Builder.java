@@ -5,13 +5,14 @@ import java.util.logging.*;
 
 import oberlin.builder.scanner.*;
 import oberlin.builder.parser.*;
+import oberlin.builder.parser.ast.*;
 
 public abstract class Builder {
 	private Logger logger = Logger.getLogger("Builder");
 	private Scanner scanner;
 	
 	public Object build(String code) throws BuilderException {
-		List<String> tokens = scanner.apply(code);
+		List<AST> tokens = (List<AST>) scanner.apply(new Terminal(code));
 		
 		//TODO: Generate AST with Parser
 		
@@ -22,7 +23,7 @@ public abstract class Builder {
 		//embedded testing than anything else, and should be removed before release.
 		
 		StringBuilder szBuilder = new StringBuilder();
-		for(String token : tokens) {
+		for(AST token : tokens) {
 			szBuilder.append(token).append("; ");
 		}
 		return szBuilder.toString();

@@ -13,8 +13,7 @@ import oberlin.builder.visitor.Visitor;
 public class Terminal extends AST {
 	private final String spelling;
 	
-	public Terminal(String spelling, Position position) {
-		super(position);
+	public Terminal(String spelling) {
 		this.spelling = spelling;
 	}
 	
