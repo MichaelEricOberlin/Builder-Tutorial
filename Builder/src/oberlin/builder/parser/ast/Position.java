@@ -1,4 +1,4 @@
-package oberlin.builder;
+package oberlin.builder.parser.ast;
 
 /**
  * Honestly, the original design called for integer literals to be passed to each AST for the sake of its beginning
