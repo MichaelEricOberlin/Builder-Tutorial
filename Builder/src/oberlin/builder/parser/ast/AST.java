@@ -9,13 +9,5 @@ import oberlin.builder.visitor.*;
  * @author © Michael Eric Oberlin Nov 3, 2014
  *
  */
-public abstract class AST implements Element {
-	/**
-	 * Indices of beginning and ending tokens in program.
-	 */
-	private RuntimeEntity entity;
-	
-	public AST() {
-		entity = null;
-	}
+public interface AST extends Element {
 }

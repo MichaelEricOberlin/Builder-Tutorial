@@ -10,7 +10,7 @@ import oberlin.builder.visitor.Visitor;
  * @author © Michael Eric Oberlin Nov 5, 2014
  *
  */
-public class Terminal extends AST {
+public class Terminal implements AST {
 	private final String spelling;
 	
 	public Terminal(String spelling) {

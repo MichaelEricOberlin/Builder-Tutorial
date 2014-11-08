@@ -25,7 +25,7 @@ public enum AlgebraicGrammar implements Grammar {
 		
 		//DELIMITERS
 		LPAREN(Pattern.compile("^\\("), GrammarType.KEEP),
-		RPAREN(Pattern.compile("^\\)"), GrammarType.KEEP);
+		RPAREN(Pattern.compile("^\\)"), GrammarType.KEEP)
 	;
 	
 	//PRIVATE FIELDS
