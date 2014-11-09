@@ -2,14 +2,14 @@ package oberlin.algebra.builder.scanner;
 
 import java.util.List;
 
-import oberlin.algebra.builder.AlgebraicGrammar;
+import oberlin.algebra.builder.AlgebraicSpelling;
 import oberlin.builder.scanner.Scanner;
 
-public class AlgebraicScanner implements Scanner<AlgebraicGrammar> {
+public class AlgebraicScanner implements Scanner<AlgebraicSpelling> {
 	
 	@Override
-	public Class<AlgebraicGrammar> getGrammar() {
-		return AlgebraicGrammar.class;
+	public Class<AlgebraicSpelling> getSpelling() {
+		return AlgebraicSpelling.class;
 	}
 
 }

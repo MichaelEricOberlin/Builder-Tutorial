@@ -8,13 +8,13 @@ import oberlin.builder.*;
 import oberlin.builder.parser.ast.*;
 
 /**
- * New design for scanners. Requires an enumeration of type Grammar to iterate over, and a code string.
+ * New design for scanners. Requires an enumeration of type TerminalSpelling to iterate over, and a code string.
  * Returns a list of tokens.
  * 
  * @author © Michael Eric Oberlin Nov 2, 2014
  *
  */
-public interface Scanner<E extends Enum<E> & Grammar> extends Function<AST, List<AST>> {
+public interface Scanner<E extends Enum<E> & TerminalSpelling> extends Function<AST, List<AST>> {
 	@Override
 	public default List<AST> apply(AST code) {
 		Logger logger = Logger.getLogger("Scanner");
@@ -29,10 +29,10 @@ public interface Scanner<E extends Enum<E> & Grammar> extends Function<AST, List
 			AST origToken = tokens.get(index);
 			
 			List<AST> newTokens = new ArrayList<>();
-			for(Grammar grammar : getGrammar().getEnumConstants()) {
+			for(TerminalSpelling terminalSpelling : getSpelling().getEnumConstants()) {
 				
 				try {
-					newTokens.addAll(grammar.matchToken(tokens.get(index)));
+					newTokens.addAll(terminalSpelling.matchToken(tokens.get(index)));
 					
 					replaceItemWithCollection(tokens, index, newTokens);
 					break;
@@ -70,7 +70,7 @@ public interface Scanner<E extends Enum<E> & Grammar> extends Function<AST, List
 	
 	/**
 	 * 
-	 * @return Grammar allocated to token recognition.
+	 * @return TerminalSpelling allocated to token recognition.
 	 */
-	public Class<E> getGrammar();
+	public Class<E> getSpelling();
 }

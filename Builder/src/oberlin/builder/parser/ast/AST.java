@@ -10,4 +10,8 @@ import oberlin.builder.visitor.*;
  *
  */
 public interface AST extends Element {
+	/**
+	 * @return number of sub-elements contained in this tree node.
+	 */
+	public int getElementCount();
 }

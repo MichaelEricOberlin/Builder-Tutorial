@@ -7,11 +7,20 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import oberlin.builder.Grammar;
+import oberlin.builder.TerminalSpelling;
 import oberlin.builder.Terminal;
 import oberlin.builder.parser.ast.AST;
 
-public enum AlgebraicGrammar implements Grammar {
+/*
+ * Major changes:
+ * For starters, if a chunk of the string matches a pattern, then that group
+ * needs to be returned as the spelling of a token.
+ * <Specific Atomic Type> ← Token ← Terminal ← AST
+ * 
+ * All tokens should contain a reference to their regular expression/grammar.
+ * 
+ */
+public enum AlgebraicSpelling implements TerminalSpelling {
 		//COMMENTS
 		WHITESPACE(Pattern.compile("^\\s+"), GrammarType.COMMENT),
 		BLOCK_COMMENT(Pattern.compile("^/\\*.*?\\*/"), GrammarType.COMMENT),
@@ -29,7 +38,7 @@ public enum AlgebraicGrammar implements Grammar {
 	;
 	
 	//PRIVATE FIELDS
-	private Logger logger = Logger.getLogger("AlgebraicGrammar");
+	private Logger logger = Logger.getLogger("AlgebraicSpelling");
 	
 	//ENUMERATIONS
 	private enum GrammarType {
@@ -50,7 +59,7 @@ public enum AlgebraicGrammar implements Grammar {
 	 * @param pattern compiled regular expression identifying the token
 	 * @param type clue as to what should be done with the token once found
 	 */
-	private AlgebraicGrammar(Pattern pattern, GrammarType type) {
+	private AlgebraicSpelling(Pattern pattern, GrammarType type) {
 		this.pattern = pattern;
 		this.type = type;
 	}

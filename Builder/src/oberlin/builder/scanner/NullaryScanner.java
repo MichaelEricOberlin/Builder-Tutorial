@@ -13,7 +13,7 @@ public class NullaryScanner implements Scanner<NullaryGrammar> {
 	}
 
 	@Override
-	public Class<NullaryGrammar> getGrammar() {
+	public Class<NullaryGrammar> getSpelling() {
 		return NullaryGrammar.class;
 	}
 

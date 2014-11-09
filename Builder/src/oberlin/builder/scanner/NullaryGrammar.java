@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import oberlin.builder.Grammar;
+import oberlin.builder.TerminalSpelling;
 import oberlin.builder.Terminal;
 import oberlin.builder.parser.ast.AST;
 
-public enum NullaryGrammar implements Grammar {
+public enum NullaryGrammar implements TerminalSpelling {
 	ANY;
 
 	@Override

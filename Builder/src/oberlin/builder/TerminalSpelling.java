@@ -6,7 +6,7 @@ import java.util.regex.*;
 
 import oberlin.builder.parser.ast.*;
 
-public interface Grammar {
+public interface TerminalSpelling {
 	
 	public default List<AST> matchToken(AST ast) throws MismatchException {
 		List<AST> returnable = new LinkedList<>();
@@ -26,7 +26,7 @@ public interface Grammar {
 	 * Determines, often through enumeration self-inspection, what should be done with a passed token.
 	 * 
 	 * @param token the original token removed from the complete String by matchToken
-	 * @return appropriate value given the circumstances and implementation of Grammar.
+	 * @return appropriate value given the circumstances and implementation of TerminalSpelling.
 	 */
 	public List<AST> manageToken(Matcher matcher);
 }

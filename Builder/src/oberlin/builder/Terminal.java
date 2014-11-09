@@ -30,4 +30,9 @@ public class Terminal implements AST {
 	public String toString() {
 		return getSpelling();
 	}
+
+	@Override
+	public final int getElementCount() {
+		return 1;
+	}
 }

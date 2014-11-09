@@ -16,7 +16,18 @@ public abstract class Builder {
 		List<AST> tokens = (List<AST>) scanner.apply(new Terminal(code));
 		
 		//We now have a list of Terminals, ready to be constructed into an AST via a Parser.
-		tokens = parser.apply(tokens);
+		/*
+		 * Note that scanner uses a TerminalSpelling enumeration. Scanner is only interested in terminals.
+		 * The complete grammar of the language goes beyond that, and is also interested in the order
+		 * of the terminals. This is where PhraseStructure comes in to play.
+		 */
+		
+		/*
+		 * Possible Issue: Parser is destroying all of the contents of code. However, this may ultimately
+		 * be irrelevant.
+		 */
+		AST program = parser.apply(tokens);
+		System.out.println(program.getClass());
 		
 		//TODO: Generate AST with Parser
 		
