@@ -11,8 +11,13 @@ import oberlin.algebra.builder.nodes.*;
 
 public enum AlgebraicPhraseStructure implements PhraseStructure {
 	EQUALITY(new ArrayList<Class<? extends AST>>()
-			{{put(Expression.class); put(EqualityOperator.class); put(Expression.class);}}
-		, Equality.class);
+			{{add(Expression.class); add(Equator.class); add(Expression.class);}}
+		, new PhraseStructureHandler(){
+
+			@Override
+			public AST apply(List<AST> t) {
+				return new Equality((Expression)t.get(0), (Equator)t.get(1), (Expression)t.get(2));
+			}});
 	
 	private final List<Class<? extends AST>> typeList;
 	private final PhraseStructureHandler handler;

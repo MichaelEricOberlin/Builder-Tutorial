@@ -9,7 +9,9 @@ import java.util.regex.Pattern;
 
 import oberlin.builder.TerminalSpelling;
 import oberlin.builder.Terminal;
+import oberlin.builder.TerminalSpellingHandler;
 import oberlin.builder.parser.ast.AST;
+import oberlin.algebra.builder.nodes.*;
 
 /*
  * Major changes:
@@ -22,19 +24,82 @@ import oberlin.builder.parser.ast.AST;
  */
 public enum AlgebraicSpelling implements TerminalSpelling {
 		//COMMENTS
-		WHITESPACE(Pattern.compile("^\\s+"), GrammarType.COMMENT),
-		BLOCK_COMMENT(Pattern.compile("^/\\*.*?\\*/"), GrammarType.COMMENT),
-		LINE_COMMENT(Pattern.compile("^//.*+$"), GrammarType.COMMENT),
+		WHITESPACE(Pattern.compile("^\\s+"), GrammarType.COMMENT, new TerminalSpellingHandler<Whitespace>(){
+
+			@Override
+			public Whitespace getTerminal(String spelling) {
+				return new Whitespace(spelling);
+			}
+			
+		}),
+		BLOCK_COMMENT(Pattern.compile("^/\\*.*?\\*/"), GrammarType.COMMENT, new TerminalSpellingHandler<BlockComment>(){
+
+			@Override
+			public BlockComment getTerminal(String spelling) {
+				return new BlockComment(spelling);
+			}
+			
+		}),
+		LINE_COMMENT(Pattern.compile("^//.*+$"), GrammarType.COMMENT, new TerminalSpellingHandler<LineComment>(){
+
+			@Override
+			public LineComment getTerminal(String spelling) {
+				return new LineComment(spelling);
+			}
+			
+		}),
 		
 		//VALIDS
-		NOMINAL(Pattern.compile("^\\w+"), GrammarType.KEEP),
-		NUMERIC(Pattern.compile("^\\d+"), GrammarType.KEEP),
-		OPERATOR(Pattern.compile("^[+-/\\\\÷\\*×\\^]"), GrammarType.KEEP),
-		EQUATOR(Pattern.compile("^!?=?[=><]"), GrammarType.KEEP),
+		NOMINAL(Pattern.compile("^\\w+"), GrammarType.KEEP, new TerminalSpellingHandler<Nominal>(){
+
+			@Override
+			public Nominal getTerminal(String spelling) {
+				return new Nominal(spelling);
+			}
+			
+		}),
+		NUMERIC(Pattern.compile("^\\d+"), GrammarType.KEEP, new TerminalSpellingHandler<Numeric>(){
+
+			@Override
+			public Numeric getTerminal(String spelling) {
+				return new Numeric(spelling);
+			}
+			
+		}),
+		OPERATOR(Pattern.compile("^[+-/\\\\÷\\*×\\^]"), GrammarType.KEEP, new TerminalSpellingHandler<Operator>(){
+
+			@Override
+			public Operator getTerminal(String spelling) {
+				return new Operator(spelling);
+			}
+			
+		}),
+		EQUATOR(Pattern.compile("^!?=?[=><]"), GrammarType.KEEP, new TerminalSpellingHandler<Equator>(){
+
+			@Override
+			public Equator getTerminal(String spelling) {
+				return new Equator(spelling);
+			}
+			
+		}),
 		
 		//DELIMITERS
-		LPAREN(Pattern.compile("^\\("), GrammarType.KEEP),
-		RPAREN(Pattern.compile("^\\)"), GrammarType.KEEP)
+		LPAREN(Pattern.compile("^\\("), GrammarType.KEEP, new TerminalSpellingHandler<LParen>(){
+
+			@Override
+			public LParen getTerminal(String spelling) {
+				return new LParen(spelling);
+			}
+			
+		}),
+		RPAREN(Pattern.compile("^\\)"), GrammarType.KEEP, new TerminalSpellingHandler<RParen>(){
+
+			@Override
+			public RParen getTerminal(String spelling) {
+				return new RParen(spelling);
+			}
+			
+		})
 	;
 	
 	//PRIVATE FIELDS
@@ -49,6 +114,7 @@ public enum AlgebraicSpelling implements TerminalSpelling {
 	//FIELDS
 	private final Pattern pattern;
 	private final GrammarType type;
+	private final TerminalSpellingHandler<?> handler;
 	
 	//CONSTRUCTORS
 	/**
@@ -59,9 +125,10 @@ public enum AlgebraicSpelling implements TerminalSpelling {
 	 * @param pattern compiled regular expression identifying the token
 	 * @param type clue as to what should be done with the token once found
 	 */
-	private AlgebraicSpelling(Pattern pattern, GrammarType type) {
+	private AlgebraicSpelling(Pattern pattern, GrammarType type, TerminalSpellingHandler<?> handler) {
 		this.pattern = pattern;
 		this.type = type;
+		this.handler = handler;
 	}
 	
 	//GETTERS/SETTERS
@@ -75,7 +142,7 @@ public enum AlgebraicSpelling implements TerminalSpelling {
 		List<AST> ret = new LinkedList<>();
 		switch(this.type) {
 		case KEEP:
-			ret.add(new Terminal(matcher.group()));
+			ret.add(handler.getTerminal(matcher.group()));
 			break;
 		case COMMENT:
 			//Just ignore it
