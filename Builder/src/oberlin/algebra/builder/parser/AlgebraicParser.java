@@ -6,7 +6,7 @@ import oberlin.builder.BuilderException;
 import oberlin.builder.parser.Parser;
 import oberlin.builder.parser.ast.AST;
 
-public class AlgebraicParser implements Parser<AlgebraicPhraseStructure> {
+public class AlgebraicParser extends Parser<AlgebraicPhraseStructure> {
 
 	@Override
 	public Class<AlgebraicPhraseStructure> getPhraseStructure() {

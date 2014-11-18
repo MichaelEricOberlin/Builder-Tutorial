@@ -1,0 +1,74 @@
+Game plan:
+
+It is important to remember that this is an API, not a complete program unto itself. It is additionally important
+to remember that this is the basis for a tutorial, as the working-code example.
+
+Builder calls each item, the Scanner, Parser, and so forth, in sequence. Any item that cannot complete throws an
+error, wrapped in a BuilderException.
+
+Scanner returns a List of String tokens.
+
+Parser returns a root AST, if it can find one.
+	To create the AST, the tokens must first be matched to Symbols.
+		The Symbol set is different for each program.
+		Symbol is found by attempting to match its internal representation (Lexeme) to the provided token.
+			If it works, a new Symbol is returned.
+			If it doesn't, a specific BuilderException called MismatchException is thrown, and the next Symbol is tested.
+			
+			All Symbols are added to the same list, in sequence.
+		Once a Symbol List is ready, it is examined piece by piece
+			The initial Symbol, given an empty currentCommand AST, restricts the number of rules that may begin with it
+				Ideally, this is one. Allow for it to be more than one if you can, but non-disjoint starter sets are
+				  an historical problem.
+				  (Maybe throw a warning?)
+				
+			
+This reflection stuff is a lot of nonsense. Think of a way to bind a language together as an enumeration instead!
+
+Proposed abstract class: Symbol
+	Extension: Terminal
+	Extension: Nonterminal
+Proposed interface: AbstractSyntaxTree
+	Contains sequence of one or more Symbols
+proposed abstract class: SyntaxRule
+	Method: Nonterminal match(List<Symbol>, Integer offset);
+		Attempts to match List of Symbols, starting at provided offset, to contained List<Symbol> for syntax.
+		Returns the Nonterminal itself if a match, throws MismatchException if it doesn't.
+Proposed enumeration: Grammar
+	Method: Terminal match(String token);
+	Declaration: Grammar(Pattern pattern);
+Proposed abstract class: Parser
+	Dig through List<String> for code
+	attempt to match each token with Grammar
+	dig through List<Terminal> with List<SyntaxRule> until no matches
+	return final AbstractSyntaxTree, the Nonterminal at the top; or throw an exception containing an error report
+
+	
+—————GAME PLAN for PARSER—————
+Visitor is still the way to go, but there's another way to implement it.
+Parameter: List<AST> code
+Attempt to initialize each AST in a mutable list
+On success:
+	Remove parameters from list
+		Use parameters to construct new AST
+	Add AST to beginning of list
+	Move to beginning of List<AST>
+On failure:
+	Raise ParseException
+		catch ParseException
+			respond by moving to next item in List<AST>.
+				on IndexOutOfBounds/etc/Exception:
+					report error
+
+Each initializer should take the singular parameter:
+	take the list of AST types
+	for each AST type (in sequential order), attempt to initialize with passed-in List<AST>
+		first check for this.class in first index
+		next, check members
+		if none found: throw MismatchException
+
+
+All that is necessary is the ability to truncate a list before a certain index
+	Use List.subList
+		* Do not alter original list while subList is in use
+		* subList.subList may also be used, as long as the above rule is considered in turn

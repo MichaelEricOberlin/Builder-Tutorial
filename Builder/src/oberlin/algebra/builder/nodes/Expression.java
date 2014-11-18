@@ -1,7 +1,6 @@
 package oberlin.algebra.builder.nodes;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import oberlin.builder.MismatchException;
 import oberlin.builder.NonTerminal;
@@ -30,10 +29,9 @@ public class Expression extends NonTerminal {
 	@Override
 	public List<Class<? extends AST>> getExpectedASTTypes() {
 		final List<Class<? extends AST>> expected = new ArrayList<>();
-		
-		/*
-		 * TODO: Fill in expected
-		 */
+		expected.add(Identifier.class);
+		expected.add(Operator.class);
+		expected.add(Identifier.class);
 		
 		return expected;
 	}

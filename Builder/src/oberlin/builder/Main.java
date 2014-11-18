@@ -30,7 +30,9 @@ public class Main {
 			String input = "";
 			Object built = null;
 			while(!input.trim().toLowerCase().equals("!exit")) {
-				if(built != null) {
+				if(input.length() != 0) {
+					built = builder.build(input);
+					
 					out.write("Builds to: " + built);
 					out.newLine();
 					out.flush();
@@ -39,8 +41,6 @@ public class Main {
 				out.write("Enter text: ");
 				out.flush();
 				input = in.readLine();
-				
-				built = builder.build(input);
 			}
 		}
 	}

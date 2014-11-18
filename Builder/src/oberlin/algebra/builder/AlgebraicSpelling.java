@@ -50,7 +50,7 @@ public enum AlgebraicSpelling implements TerminalSpelling {
 		}),
 		
 		//VALIDS
-		NOMINAL(Pattern.compile("^\\w+"), GrammarType.KEEP, new TerminalSpellingHandler<Nominal>(){
+		NOMINAL(Pattern.compile("^[\\D&&\\w]\\w+"), GrammarType.KEEP, new TerminalSpellingHandler<Nominal>(){
 
 			@Override
 			public Nominal getTerminal(String spelling) {

@@ -9,11 +9,14 @@ import oberlin.builder.parser.ast.*;
 
 public abstract class Builder {
 	private Logger logger = Logger.getLogger("Builder");
-	private Scanner scanner = new NullaryScanner();
-	private Parser parser = new NullaryParser();
+	private Scanner<?> scanner = new NullaryScanner();
+	private Parser<?> parser = new NullaryParser();
 	
 	public Object build(String code) throws BuilderException {
 		List<AST> tokens = (List<AST>) scanner.apply(new Terminal(code));
+		
+//		//NOTE: EXCLUSIVELY FOR DEBUGGING
+//		tokens.stream().forEach(tk -> System.out.println(tk.getClass()));
 		
 		//We now have a list of Terminals, ready to be constructed into an AST via a Parser.
 		/*

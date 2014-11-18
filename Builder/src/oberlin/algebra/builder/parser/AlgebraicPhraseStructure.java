@@ -1,40 +1,73 @@
 package oberlin.algebra.builder.parser;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
-import oberlin.builder.PhraseStructure;
-import oberlin.builder.parser.NullaryAST;
-import oberlin.builder.parser.PhraseStructureHandler;
+import oberlin.builder.BuilderException;
+import oberlin.builder.MismatchException;
+import oberlin.builder.parser.Phrase;
+import oberlin.builder.parser.PhraseStructure;
 import oberlin.builder.parser.ast.AST;
 import oberlin.algebra.builder.nodes.*;
 
+/*
+ * TODO: Next up: Establish rules for each type of branch node in the following enumeration.
+ */
 public enum AlgebraicPhraseStructure implements PhraseStructure {
-	EQUALITY(new ArrayList<Class<? extends AST>>()
-			{{add(Expression.class); add(Equator.class); add(Expression.class);}}
-		, new PhraseStructureHandler(){
+	PROGRAM(new Function<List<AST>, Boolean>() {
 
-			@Override
-			public AST apply(List<AST> t) {
-				return new Equality((Expression)t.get(0), (Equator)t.get(1), (Expression)t.get(2));
-			}});
+		@Override
+		public Boolean apply(List<AST> t) {
+			try {
+				Program program = new Program(t);
+				t = PhraseStructure.trim(program, t);
+				return true;
+			} catch(MismatchException ex) {
+				return false;
+			}
+		}
+
+	}),
+	EQUALITY(new Function<List<AST>, Boolean>() {
+
+		@Override
+		public Boolean apply(List<AST> t) {
+			try {
+				Equality equality = new Equality(t);
+				t = PhraseStructure.trim(equality, t);
+				return true;
+			} catch(MismatchException ex) {
+				return false;
+			}
+		}
+
+	}),
+	EXPRESSION(new Function<List<AST>, Boolean>() {
+
+		@Override
+		public Boolean apply(List<AST> t) {
+			try {
+				Expression expression = new Expression(t);
+				t = PhraseStructure.trim(expression, t);
+				return true;
+			} catch(MismatchException ex) {
+				return false;
+			}
+		}
+
+	});
+
+	private Function<List<AST>, Boolean> generator;
 	
-	private final List<Class<? extends AST>> typeList;
-	private final PhraseStructureHandler handler;
-	
-	private AlgebraicPhraseStructure(List<Class<? extends AST>> typeList, PhraseStructureHandler handler) {
-		this.typeList = typeList;
-		this.handler = handler;
+	private AlgebraicPhraseStructure(Function<List<AST>, Boolean> generator) {
+		this.generator = generator;
 	}
 	
 	@Override
-	public List<Class<? extends AST>> getASTTypeList() {
-		return this.typeList;
+	public boolean match(List<AST> treeList) {
+		return this.generator.apply(treeList);
 	}
-
-	@Override
-	public AST formatElement(List<AST> code) {
-		return new NullaryAST();
-	}
-
+	
+	
+	
 }
