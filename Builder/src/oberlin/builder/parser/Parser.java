@@ -77,7 +77,6 @@ public abstract class Parser<E extends Enum<E> & PhraseStructure> implements Fun
 				//else continue.
 			}
 			
-			System.out.println(matched);
 			if(!matched) {
 				//TODO: Give more data on this
 				System.err.println();

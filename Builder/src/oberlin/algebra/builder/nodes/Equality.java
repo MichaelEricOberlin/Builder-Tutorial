@@ -23,9 +23,9 @@ public class Equality extends NonTerminal {
 	
 	public List<Class<? extends AST>> getExpectedASTTypes() {
 		List<Class<? extends AST>> expected = new ArrayList<>();
-		expected.add(Expression.class);
+		expected.add(Identifier.class);
 		expected.add(Equator.class);
-		expected.add(Expression.class);
+		expected.add(Identifier.class);
 		return expected;
 	}
 	

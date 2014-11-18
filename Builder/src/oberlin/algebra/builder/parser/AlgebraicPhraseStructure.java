@@ -48,7 +48,10 @@ public enum AlgebraicPhraseStructure implements PhraseStructure {
 		public Boolean apply(List<AST> t) {
 			try {
 				Expression expression = new Expression(t);
+				System.out.println(t.size() + " elements in original list");
+				System.out.println("Expression element count: " + expression.getElementCount());
 				t = PhraseStructure.trim(expression, t);
+				System.out.println(t.size() + " final elements");
 				return true;
 			} catch(MismatchException ex) {
 				return false;

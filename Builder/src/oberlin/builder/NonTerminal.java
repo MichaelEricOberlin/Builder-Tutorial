@@ -19,20 +19,28 @@ public abstract class NonTerminal implements AST {
 	}
 	
 	public NonTerminal(List<AST> astList) throws MismatchException {
-		if(!checkTypes(astList)) throw new MismatchException("Nonterminal class " + this.getClass() + " does not match " +
-				"expression.");
-		this.astList = astList;
+		/*
+		 * TODO: MICK: Not sure what you were thinking here, but don't try and set the NonTerminal to contain
+		 * the entire AST list. Truncate it to what it needs, and nothing more.
+		 */
+		try {
+			this.astList = resolveTypes(astList);
+		} catch(BuilderException ex) {
+			throw new MismatchException(ex);
+		}
 	}
 	
 	public abstract List<Class<? extends AST>> getExpectedASTTypes();
 	
 	/**
-	 * Check to see that all provided ASTs are some extension of the expected class of AST.
+	 * Check to see that all provided ASTs are some extension of the expected class of AST,
+	 * and create the internal list of ASTs from it if possible.
 	 * 
 	 * @param astList current list of program ASTs 
 	 * @return true if the first ASTs match the expected ones, false otherwise
 	 */
-	private boolean checkTypes(List<AST> astList) {
+	private List<AST> resolveTypes(List<AST> astList) throws BuilderException {
+		List<AST> ownASTs = new ArrayList<>();
 //		System.out.println(this.getClass());
 		List<Class<? extends AST>> astTypes = getExpectedASTTypes();
 		System.out.println(this.getClass() + " types size: " + astTypes.size());
@@ -41,11 +49,12 @@ public abstract class NonTerminal implements AST {
 			Class<? extends AST> provided, expected;
 			provided = astList.get(i).getClass();
 			expected = astTypes.get(i);
-			if(!provided.equals(expected)) {
-				return false;
+			if(!expected.isAssignableFrom(provided)) {
+				throw new BuilderException("Cannot get " + expected + " from " + provided.getClass());
 			}
+			ownASTs.add(astList.get(i));
 		}
-		return true;
+		return ownASTs;
 	}
 	
 	/**
