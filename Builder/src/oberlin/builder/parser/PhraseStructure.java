@@ -6,41 +6,7 @@ import oberlin.builder.parser.ast.AST;
 import java.util.*;
 
 public interface PhraseStructure {
-	/**
-	 * Accepts a list of nodes and returns the list slightly altered so that
-	 * recognized pattern matches are condensed into nonterminals.
-	 * 
-	 * @param treeList List of recognized Abstract Syntax Tree nodes
-	 * @return condensed list of recognized Abstract Syntax Tree nodes
-	 */
-//	public default List<AST> getPhrase(List<AST> treeList) throws BuilderException {
-//		
-//		//get iterator for enumeration
-//		PhraseStructure[] enums = this.getClass().getEnumConstants();
-//		List<? extends PhraseStructure> list = Arrays.asList(enums);
-		
-//		while(treeList.size() > 1) {
-//			Iterator<? extends PhraseStructure> iterator = list.iterator();
-//			boolean matched = false;
-//			
-//			while(iterator.hasNext()) {
-//				PhraseStructure ps = iterator.next();
-//				if(ps.match(treeList)) {
-//					//match found and alteration made!
-//					matched = true;
-//					break;
-//				}
-//				//else continue.
-//			}
-//			if(!matched) {
-//				//TODO: Give more data on this
-//				throw new BuilderException("Syntax incomplete");
-//			}
-//		}
-//		
-//		return treeList;
-//	}
-	
+
 	/**
 	 * Determines whether or not the current PhraseStructure matches the
 	 * list of syntax trees. Presumably alters the structure of the tree
