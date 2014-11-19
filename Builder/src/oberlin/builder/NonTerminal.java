@@ -19,10 +19,6 @@ public abstract class NonTerminal implements AST {
 	}
 	
 	public NonTerminal(List<AST> astList) throws MismatchException {
-		/*
-		 * TODO: MICK: Not sure what you were thinking here, but don't try and set the NonTerminal to contain
-		 * the entire AST list. Truncate it to what it needs, and nothing more.
-		 */
 		try {
 			this.astList = resolveTypes(astList);
 		} catch(BuilderException ex) {
@@ -41,7 +37,6 @@ public abstract class NonTerminal implements AST {
 	 */
 	private List<AST> resolveTypes(List<AST> astList) throws BuilderException {
 		List<AST> ownASTs = new ArrayList<>();
-//		System.out.println(this.getClass());
 		List<Class<? extends AST>> astTypes = getExpectedASTTypes();
 		System.out.println(this.getClass() + " types size: " + astTypes.size());
 		

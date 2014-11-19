@@ -2,13 +2,11 @@ package oberlin.algebra.builder;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import oberlin.builder.TerminalSpelling;
-import oberlin.builder.Terminal;
 import oberlin.builder.TerminalSpellingHandler;
 import oberlin.builder.parser.ast.AST;
 import oberlin.algebra.builder.nodes.*;
