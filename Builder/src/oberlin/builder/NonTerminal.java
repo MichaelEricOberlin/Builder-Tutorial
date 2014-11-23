@@ -11,7 +11,7 @@ public abstract class NonTerminal implements AST {
 		if(!checkTypes(astList)) throw new MismatchException("Nonterminal class " + this.getClass() + " does not match " +
 				"expression.");
 		
-		List<AST> list = new ArrayList();
+		List<AST> list = new ArrayList<>();
 		for(AST ast : astList) {
 			list.add(ast);
 		}
@@ -59,6 +59,7 @@ public abstract class NonTerminal implements AST {
 	 * @return true if the first ASTs match the expected ones, false otherwise
 	 */
 	private boolean checkTypes(AST... astList) {
+		//This should be an ASTPatternMatcher.
 		List<Class<? extends AST>> astTypes = getExpectedASTTypes();
 		
 		for(int i = 0; i < astList.length; i++) {
