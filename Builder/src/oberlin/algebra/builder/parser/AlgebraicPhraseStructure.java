@@ -50,6 +50,18 @@ public enum AlgebraicPhraseStructure implements PhraseStructure {
 			}
 		}
 
+	}),
+	IDENTIFIER(new Function<List<AST>, Boolean>() {
+		@Override
+		public Boolean apply(List<AST> t) {
+			try {
+				Identifier identifier = new Identifier(t);
+				t = PhraseStructure.trim(identifier, t);
+				return true;
+			} catch(MismatchException ex) {
+				return false;
+			}
+		}
 	});
 
 	private Function<List<AST>, Boolean> generator;

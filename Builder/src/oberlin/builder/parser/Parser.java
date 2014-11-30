@@ -60,7 +60,7 @@ public abstract class Parser<E extends Enum<E> & PhraseStructure> implements Fun
 			//DEBUG
 			System.out.println("Code size: " + code.size());
 			System.out.print("Code: ");
-			code.stream().forEach(sz -> System.out.println(sz + " "));
+			code.stream().forEach(sz -> System.out.print(sz + "; "));
 			System.out.println();
 			
 			Iterator<? extends PhraseStructure> iterator = list.iterator();
@@ -68,6 +68,7 @@ public abstract class Parser<E extends Enum<E> & PhraseStructure> implements Fun
 			
 			while(iterator.hasNext()) {
 				PhraseStructure ps = iterator.next();
+				System.out.println("Phrase Structure: " + ps);
 				if(ps.match(code)) {
 					//match found and alteration made!
 					matched = true;

@@ -14,7 +14,7 @@ public class ASTPattern {
 	/**Mapping of String names to AST classes*/
 	/* Start with an empty BiMap. */
 	/* This should probably be a Singleton, instead of a static. */
-	private static volatile ImmutableBiMap<String, Class<? extends AST>> typeNameMap
+	private ImmutableBiMap<String, Class<? extends AST>> typeNameMap
 		= (new ImmutableBiMap.Builder<String, Class<? extends AST>>()).build();
 //	private Map typeNameMap = new HashMap<String, Class<? extends AST>>();
 	
@@ -35,6 +35,11 @@ public class ASTPattern {
 				i = 0;
 			}
 		}
+		
+		//Next, remove all literal whitespace
+		final Pattern whitespace = Pattern.compile("\\s+");
+		whitespace.matcher(regex).replaceAll("");
+		
 		//if block ensures that pattern always checks the beginning of the String,
 		//even if the original pattern did not start with a ^
 //		if(regex.toString().startsWith("^")) {
@@ -60,8 +65,12 @@ public class ASTPattern {
 	 * @return true if a match was found, false otherwise
 	 */
 	public boolean match(List<AST> code) {
+		System.out.println();
+		System.out.println("HIGHLY SUSPECT");
+		System.out.println("code: " + code);
 		//first, create a string matching the code list
 		String szCode = makeString(code);
+		System.out.println("szCode from code: " + szCode);
 		
 		//second, check this string against the internal regex
 		if(pattern.matcher(szCode).find()) {
@@ -91,13 +100,24 @@ public class ASTPattern {
 	}
 	
 	public String makeString(List<AST> code) {
+		System.out.println("Making String from list size " + code.size());
 		BiMap<String, Class<? extends AST>> nameMap = getTypeNameMap();
 		BiMap<Class<? extends AST>, String> classMap = nameMap.inverse();
 		
+		System.out.println("Name map:");
+		classMap.keySet().forEach(n -> System.out.print(n + " "));
+		System.out.println();
+		
+		System.out.println("Class map:");
+		classMap.keySet().forEach(cls -> System.out.print(cls + " "));
+		System.out.println();
+		
 		StringBuilder result = new StringBuilder();
 		for(AST ast : code) {
+			System.out.println("AST type: " + ast.getClass());
 			Class<? extends AST> cls = ast.getClass();
 			result.append(classMap.get(cls)).append(" ");
+			System.out.println("String (so far): " + result.toString());
 		}
 		
 		return result.toString();
@@ -105,17 +125,17 @@ public class ASTPattern {
 	
 	//GETTERS/SETTERS
 	
-	public static BiMap<String, Class<? extends AST>> getTypeNameMap() {
+	public BiMap<String, Class<? extends AST>> getTypeNameMap() {
 		return typeNameMap;
 	}
 
-	public static void setTypeNameMap(Map<String, Class<? extends AST>> typeNameMap) {
+	public void setTypeNameMap(Map<String, Class<? extends AST>> typeNameMap) {
 		/*
 		 * We don't expect the map to change during parsing, so make it an immutable map. If
 		 * the language does require its own structure to change (potential example: Ruby),
 		 * then this can still be overrided.
 		 */
-		ASTPattern.typeNameMap = ImmutableBiMap.copyOf(typeNameMap);
+		typeNameMap = ImmutableBiMap.copyOf(typeNameMap);
 	}
 
 	public Pattern getPattern() {

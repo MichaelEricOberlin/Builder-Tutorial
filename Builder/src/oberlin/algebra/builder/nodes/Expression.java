@@ -1,10 +1,12 @@
 package oberlin.algebra.builder.nodes;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import oberlin.builder.MismatchException;
 import oberlin.builder.NonTerminal;
 import oberlin.builder.parser.ast.AST;
+import oberlin.builder.parser.ast.pattern.ASTPattern;
 import oberlin.builder.visitor.Visitor;
 
 public class Expression extends NonTerminal {
@@ -34,6 +36,12 @@ public class Expression extends NonTerminal {
 		expected.add(Identifier.class);
 		
 		return expected;
+	}
+
+	@Override
+	protected ASTPattern getASTPattern() {
+		final AlgebraicPattern pattern = new AlgebraicPattern(Pattern.compile("IDENTIFIER OPERATOR IDENTIFIER"));
+		return pattern;
 	}
 
 }
