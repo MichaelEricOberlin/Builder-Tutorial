@@ -7,9 +7,13 @@ import oberlin.builder.parser.ast.AST;
 import oberlin.builder.parser.ast.pattern.ASTPattern;
 
 public class AlgebraicPattern extends ASTPattern {
-	
-	final Map<String, Class<? extends AST>> nameMap = new HashMap<>();
-	{
+
+	public AlgebraicPattern(Pattern pattern) {
+		super(getNameMap(), pattern);
+	}
+
+	private static Map<String, Class<? extends AST>> getNameMap() {
+		final Map<String, Class<? extends AST>> nameMap = new HashMap<>();
 		nameMap.put("EXPRESSION", Expression.class);
 		nameMap.put("EQUALITY", Equality.class);
 		nameMap.put("PROGRAM", Program.class);
@@ -19,14 +23,8 @@ public class AlgebraicPattern extends ASTPattern {
 		nameMap.put("LPAREN", LParen.class);
 		nameMap.put("RPAREN", RParen.class);
 		nameMap.put("OPERATOR", Operator.class);
-	}
-	
-	public AlgebraicPattern(Pattern pattern) {
-		super(pattern);
-		
-		nameMap.keySet().stream().forEach(name -> System.out.print(name + " "));
-		//set type name map
-		setTypeNameMap(nameMap);
+
+		return nameMap;
 	}
 
 }

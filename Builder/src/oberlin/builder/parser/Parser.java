@@ -58,21 +58,15 @@ public abstract class Parser<E extends Enum<E> & PhraseStructure> implements Fun
 		while(code.size() > 1) {
 			
 			//DEBUG
-			System.out.println("Code size: " + code.size());
-			System.out.print("Code: ");
-			code.stream().forEach(sz -> System.out.print(sz + "; "));
-			System.out.println();
-			
 			Iterator<? extends PhraseStructure> iterator = list.iterator();
 			boolean matched = false;
 			
 			while(iterator.hasNext()) {
 				PhraseStructure ps = iterator.next();
-				System.out.println("Phrase Structure: " + ps);
+//				System.out.println("Phrase Structure: " + ps);
 				if(ps.match(code)) {
 					//match found and alteration made!
 					matched = true;
-					System.out.println(ps + ": " + matched);
 					break;
 				}
 				//else continue.

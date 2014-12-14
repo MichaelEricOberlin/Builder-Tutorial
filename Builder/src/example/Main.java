@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 public class Main {
 
 	public static void main(String[] args) {
+
 		System.out.println("example.Main");
 		
 		try(BufferedReader in = new BufferedReader(new InputStreamReader(System.in));

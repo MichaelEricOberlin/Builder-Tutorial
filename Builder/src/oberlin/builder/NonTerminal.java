@@ -25,7 +25,6 @@ public abstract class NonTerminal implements AST {
 	}
 	
 	public NonTerminal(List<AST> astList) throws MismatchException {
-		System.out.println("Attempting to create " + this.getClass());
 		try {
 			this.astList = resolveTypes(astList);
 		} catch(BuilderException ex) {
@@ -87,17 +86,24 @@ public abstract class NonTerminal implements AST {
 	private List<AST> resolveTypes(List<AST> astList) throws BuilderException {
 		ASTPattern pattern = getASTPattern();
 		System.out.println("Matching " + pattern + " against " + astList);
-		
-		if(pattern.match(astList)) {
-			/*
-			 * TODO: Have pattern memorize the group that matched, and return it as an
-			 * ordered sequence of nodes
-			 */
-			//DEBUG: just a method breaker.
-			return astList;
-		} else {
+		System.out.println("Pattern: " + pattern.getPattern().pattern());
+		try {
+			astList = pattern.match(astList);
+		} catch(MismatchException ex) {
 			throw new BuilderException("Cannot get " + this.getClass() + " from provided nodes");
 		}
+//		if(pattern.match(astList)) {
+//			/*
+//			 * TODO: Have pattern memorize the group that matched, and return it as an
+//			 * ordered sequence of nodes
+//			 */
+//			//DEBUG: just a method breaker.
+//			return astList;
+//		} else {
+////			System.out.println("NO MATCH");
+////			throw new BuilderException("Cannot get " + this.getClass() + " from provided nodes");
+//		}
+		return astList;
 	}
 	
 	/**

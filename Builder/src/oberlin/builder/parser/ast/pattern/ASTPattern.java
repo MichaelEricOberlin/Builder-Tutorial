@@ -1,5 +1,6 @@
 package oberlin.builder.parser.ast.pattern;
 
+import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.regex.*;
 
@@ -18,7 +19,16 @@ public class ASTPattern {
 		= (new ImmutableBiMap.Builder<String, Class<? extends AST>>()).build();
 //	private Map typeNameMap = new HashMap<String, Class<? extends AST>>();
 	
-	public ASTPattern(Pattern pattern) {
+	/**
+	 * @param typeNameMap mapping of String representations to AST classes for this language
+	 * @param pattern regular expression showing physical relationship of type names in this pattern
+	 */
+	public ASTPattern(Map<String, Class<? extends AST>> typeNameMap, Pattern pattern) {
+		System.out.println("Names: ");
+		typeNameMap.keySet().stream().forEach(name->System.out.print(name + " "));
+		System.out.println();
+		this.setTypeNameMap(typeNameMap);
+		
 		StringBuilder regex = new StringBuilder(pattern.pattern());
 		
 		//First, clip through the passed regex, finding each expression type
@@ -50,8 +60,8 @@ public class ASTPattern {
 			//Note: It is highly unlikely that a "^" will appear in a syntax declaration
 	}
 	
-	public ASTPattern(String pattern) {
-		this(Pattern.compile(pattern));
+	public ASTPattern(Map<String, Class<? extends AST>> typeNameMap, String pattern) {
+		this(typeNameMap, Pattern.compile(pattern));
 	}
 	
 	/**
@@ -65,16 +75,28 @@ public class ASTPattern {
 	 * @return true if a match was found, false otherwise
 	 */
 	public boolean match(List<AST> code) {
-		System.out.println();
-		System.out.println("HIGHLY SUSPECT");
-		System.out.println("code: " + code);
 		//first, create a string matching the code list
 		String szCode = makeString(code);
 		System.out.println("szCode from code: " + szCode);
 		
 		//second, check this string against the internal regex
-		if(pattern.matcher(szCode).find()) {
-			
+		Matcher matcher = pattern.matcher(szCode);
+		if(matcher.find()) {
+			int count = matcher.groupCount();
+			/*
+			 * TODO: Possible bug: should this be i < count, or i <= count?
+			 */
+			for(int i = 1; i < count; i++) {
+				String match = matcher.group(i);
+				/*
+				 * NOTE: THOUGHTS:
+				 * Enumerations are much faster than reflection.
+				 * 
+				 * Additionally, a more specific list of groups would be more
+				 * effective than looking at the exact group count; as that
+				 * would free up group usage for original regular expressions.
+				 */
+			}
 			return true;
 		} else {
 			//Just a placeholder for now, for the sake of compilation;
@@ -100,21 +122,15 @@ public class ASTPattern {
 	}
 	
 	public String makeString(List<AST> code) {
-		System.out.println("Making String from list size " + code.size());
 		BiMap<String, Class<? extends AST>> nameMap = getTypeNameMap();
 		BiMap<Class<? extends AST>, String> classMap = nameMap.inverse();
 		
-		System.out.println("Name map:");
-		classMap.keySet().forEach(n -> System.out.print(n + " "));
-		System.out.println();
-		
-		System.out.println("Class map:");
-		classMap.keySet().forEach(cls -> System.out.print(cls + " "));
+		System.out.print("Code list: ");
+		code.stream().forEach(ast -> System.out.print(ast.getClass() + " "));
 		System.out.println();
 		
 		StringBuilder result = new StringBuilder();
 		for(AST ast : code) {
-			System.out.println("AST type: " + ast.getClass());
 			Class<? extends AST> cls = ast.getClass();
 			result.append(classMap.get(cls)).append(" ");
 			System.out.println("String (so far): " + result.toString());
@@ -135,7 +151,7 @@ public class ASTPattern {
 		 * the language does require its own structure to change (potential example: Ruby),
 		 * then this can still be overrided.
 		 */
-		typeNameMap = ImmutableBiMap.copyOf(typeNameMap);
+		this.typeNameMap = ImmutableBiMap.copyOf(typeNameMap);
 	}
 
 	public Pattern getPattern() {

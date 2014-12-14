@@ -15,9 +15,6 @@ public abstract class Builder {
 	public Object build(String code) throws BuilderException {
 		List<AST> tokens = (List<AST>) scanner.apply(new Terminal(code));
 		
-//		//NOTE: EXCLUSIVELY FOR DEBUGGING
-//		tokens.stream().forEach(tk -> System.out.println(tk.getClass()));
-		
 		//We now have a list of Terminals, ready to be constructed into an AST via a Parser.
 		/*
 		 * Note that scanner uses a TerminalSpelling enumeration. Scanner is only interested in terminals.
@@ -30,7 +27,6 @@ public abstract class Builder {
 		 * be irrelevant.
 		 */
 		AST program = parser.apply(tokens);
-		System.out.println(program.getClass());
 		
 		//TODO: Generate AST with Parser
 		

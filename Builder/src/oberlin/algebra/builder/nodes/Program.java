@@ -32,7 +32,6 @@ public class Program extends NonTerminal {
 	public List<Class<? extends AST>> getExpectedASTTypes() {
 		List<Class<? extends AST>> types = new ArrayList<>();
 		types.add(Equality.class);
-//		System.out.println("types: " + types);
 		return types;
 	}
 

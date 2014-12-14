@@ -25,15 +25,9 @@ public interface PhraseStructure {
 	 * @return altered treeList, prepending the passed AST and removing its contents
 	 */
 	public static List<AST> trim(AST ast, List<AST> treeList) {
-		System.out.println("ast element count: " + ast.getElementCount());
 		for(int i = 0; i < ast.getElementCount(); i++) {
 			treeList.remove(0);
-			System.out.println("treeList after size-one truncation at index " + i + ": ");
-			treeList.stream().forEach(t -> System.out.print(t + ", "));
-			System.out.println();
-			System.out.println("getElementCount() == " + ast.getElementCount());
 		}
-		System.out.println("Post-truncation element count: " + treeList.size());
 		treeList.add(0, ast);
 		return treeList;
 	}
