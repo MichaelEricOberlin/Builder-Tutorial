@@ -7,18 +7,19 @@ import java.util.regex.Pattern;
 import oberlin.builder.MismatchException;
 import oberlin.builder.NonTerminal;
 import oberlin.builder.Terminal;
+import oberlin.builder.parser.SourcePosition;
 import oberlin.builder.parser.ast.AST;
 import oberlin.builder.parser.ast.pattern.ASTPattern;
 import oberlin.builder.visitor.Visitor;
 
 public class Identifier extends NonTerminal {
 
-	public Identifier(List<AST> astList) {
-		super(astList);
+	public Identifier(SourcePosition position, List<AST> astList) {
+		super(position, astList);
 	}
 	
-	public Identifier(AST...astList) throws MismatchException {
-		super(astList);
+	public Identifier(SourcePosition position, AST...astList) throws MismatchException {
+		super(position, astList);
 	}
 
 	@Override

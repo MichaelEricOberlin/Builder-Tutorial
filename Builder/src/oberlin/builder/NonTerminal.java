@@ -2,13 +2,17 @@ package oberlin.builder;
 
 import java.util.*;
 
+import oberlin.builder.parser.SourcePosition;
 import oberlin.builder.parser.ast.AST;
 import oberlin.builder.parser.ast.pattern.ASTPattern;
 
 public abstract class NonTerminal implements AST {
 	private final List<AST> astList;
+	private final SourcePosition position;
 	
-	public NonTerminal(AST... astList) throws MismatchException {
+	public NonTerminal(SourcePosition position, AST... astList) throws MismatchException {
+		this.position = position;
+		
 		try {
 			resolveTypes(astList);
 		} catch(BuilderException ex) {
@@ -24,7 +28,9 @@ public abstract class NonTerminal implements AST {
 		this.astList = list; 
 	}
 	
-	public NonTerminal(List<AST> astList) throws MismatchException {
+	public NonTerminal(SourcePosition position, List<AST> astList) throws MismatchException {
+		this.position = position;
+		
 		try {
 			this.astList = resolveTypes(astList);
 		} catch(BuilderException ex) {
@@ -114,5 +120,10 @@ public abstract class NonTerminal implements AST {
 	@Override
 	public int getElementCount() {
 		return astList.size();
+	}
+	
+	@Override
+	public SourcePosition getPosition() {
+		return this.position;
 	}
 }

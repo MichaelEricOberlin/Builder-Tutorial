@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import oberlin.builder.*;
+import oberlin.builder.parser.SourcePosition;
 import oberlin.builder.parser.ast.AST;
 import oberlin.builder.parser.ast.pattern.ASTPattern;
 import oberlin.builder.visitor.Visitor;
@@ -15,12 +16,12 @@ public class Equality extends NonTerminal {
 //	final Equator equator;
 	
 	
-	public Equality(AST...astList) {
-		super(astList);
+	public Equality(SourcePosition position, AST...astList) {
+		super(position, astList);
 	}
 	
-	public Equality(List<AST> astList) {
-		super(astList);
+	public Equality(SourcePosition position, List<AST> astList) {
+		super(position, astList);
 	}
 	
 	public List<Class<? extends AST>> getExpectedASTTypes() {

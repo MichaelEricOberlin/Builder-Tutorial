@@ -1,6 +1,7 @@
 package oberlin.builder.parser.ast;
 
 import oberlin.builder.codegenerator.RuntimeEntity;
+import oberlin.builder.parser.SourcePosition;
 import oberlin.builder.visitor.*;
 
 /**
@@ -14,4 +15,6 @@ public interface AST extends Element {
 	 * @return number of sub-elements contained in this tree node.
 	 */
 	public int getElementCount();
+	
+	public SourcePosition getPosition();
 }

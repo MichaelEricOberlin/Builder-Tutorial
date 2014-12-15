@@ -1,9 +1,11 @@
 package oberlin.algebra.builder.nodes;
 
+import oberlin.builder.parser.SourcePosition;
+
 public class LineComment extends Comment {
 
-	public LineComment(String spelling) {
-		super(spelling);
+	public LineComment(SourcePosition position, String spelling) {
+		super(position, spelling);
 	}
 
 }
