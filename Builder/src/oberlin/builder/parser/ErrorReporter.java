@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import oberlin.builder.BuilderException;
@@ -17,7 +18,7 @@ import oberlin.builder.BuilderException;
  */
 public class ErrorReporter {
 	
-	private List<BuilderException> errors;
+	private List<BuilderException> errors = new ArrayList<>();
 	
 	public ErrorReporter() {
 		

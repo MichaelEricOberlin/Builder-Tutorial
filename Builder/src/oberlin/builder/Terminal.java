@@ -15,7 +15,7 @@ public class Terminal implements AST {
 	private final String spelling;
 	private final SourcePosition position;
 	
-	public Terminal(SourcePosition position, String spelling) {
+	public Terminal(String spelling, SourcePosition position) {
 		this.spelling = spelling;
 		this.position = position;
 	}
@@ -24,10 +24,10 @@ public class Terminal implements AST {
 		return this.spelling;
 	}
 
-	@Override
-	public void accept(Visitor visitor) {
-		visitor.visit(this);
-	}
+//	@Override
+//	public void accept(Visitor visitor) {
+//		visitor.visit(this);
+//	}
 
 	@Override
 	public String toString() {

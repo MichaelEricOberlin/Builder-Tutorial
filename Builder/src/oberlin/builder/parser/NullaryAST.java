@@ -8,13 +8,14 @@ import oberlin.builder.visitor.Visitor;
 
 public class NullaryAST implements AST {
 	
-	Logger logger = Logger.getLogger("NullaryAST");
+	private SourcePosition position;
 	
-	@Override
-	public void accept(Visitor visitor) {
-		logger.log(Level.INFO, "NullaryAST received visitor " + visitor);
+	public NullaryAST(SourcePosition position) {
+		this.position = position;
 	}
-
+	
+	private Logger logger = Logger.getLogger("NullaryAST");
+	
 	/**
 	 * @return always 2, so that any sequence of ASTs can be reduced to a single NullaryAST. This
 	 * prevents infinite loops.
@@ -22,6 +23,11 @@ public class NullaryAST implements AST {
 	@Override
 	public int getElementCount() {
 		return 2;
+	}
+
+	@Override
+	public SourcePosition getPosition() {
+		return this.position;
 	}
 
 }

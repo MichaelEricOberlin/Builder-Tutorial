@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.*;
 
+import oberlin.builder.parser.SourcePosition;
 import oberlin.builder.parser.ast.*;
 
 public interface TerminalSpelling {
@@ -14,8 +15,8 @@ public interface TerminalSpelling {
 		Pattern pattern = getPattern();
 		Matcher matcher = pattern.matcher(ast.toString());
 		if(matcher.find()) {
-			returnable.addAll(manageToken(matcher));
-			returnable.add(new Terminal(ast.toString().substring(matcher.end())));
+			returnable.addAll(manageToken(matcher, ast.getPosition()));
+			returnable.add(new Terminal(ast.toString().substring(matcher.end()), ast.getPosition()));
 			return returnable;
 		} else throw new MismatchException("String \"" + ast + "\" does not match grammar pattern + \"" + pattern + "\"");
 	}
@@ -28,5 +29,5 @@ public interface TerminalSpelling {
 	 * @param token the original token removed from the complete String by matchToken
 	 * @return appropriate value given the circumstances and implementation of TerminalSpelling.
 	 */
-	public List<AST> manageToken(Matcher matcher);
+	public List<AST> manageToken(Matcher matcher, SourcePosition position);
 }

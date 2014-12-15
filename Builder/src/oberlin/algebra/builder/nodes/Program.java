@@ -23,12 +23,12 @@ public class Program extends NonTerminal {
 		super(position, astList);
 	}
 
-	@Override
-	public void accept(Visitor visitor) {
-		// TODO Auto-generated method stub
-		
-	}
-
+//	@Override
+//	public void accept(Visitor visitor) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
 	@Override
 	public List<Class<? extends AST>> getExpectedASTTypes() {
 		List<Class<? extends AST>> types = new ArrayList<>();

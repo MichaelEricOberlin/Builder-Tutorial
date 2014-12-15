@@ -6,7 +6,7 @@ import oberlin.builder.parser.SourcePosition;
 public class Operator extends Terminal {
 
 	public Operator(String spelling, SourcePosition position) {
-		super(position, spelling);
+		super(spelling, position);
 	}
 
 }

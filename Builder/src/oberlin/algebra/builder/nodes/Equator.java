@@ -5,8 +5,8 @@ import oberlin.builder.parser.SourcePosition;
 
 public class Equator extends Terminal {
 
-	public Equator(SourcePosition position, String spelling) {
-		super(position, spelling);
+	public Equator(String spelling, SourcePosition position) {
+		super(spelling, position);
 	}
 
 }

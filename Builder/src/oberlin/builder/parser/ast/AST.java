@@ -1,6 +1,7 @@
 package oberlin.builder.parser.ast;
 
 import oberlin.builder.codegenerator.RuntimeEntity;
+import oberlin.builder.parser.Parser2;
 import oberlin.builder.parser.SourcePosition;
 import oberlin.builder.visitor.*;
 
@@ -10,11 +11,15 @@ import oberlin.builder.visitor.*;
  * @author © Michael Eric Oberlin Nov 3, 2014
  *
  */
-public interface AST extends Element {
+public interface AST {
 	/**
 	 * @return number of sub-elements contained in this tree node.
 	 */
 	public int getElementCount();
 	
 	public SourcePosition getPosition();
+	
+	public default void accept(Visitor visitor, Parser2<?> parser, SourcePosition position) {
+		visitor.visit(getClass(), parser, position);
+	}
 }

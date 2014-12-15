@@ -13,11 +13,11 @@ public abstract class NonTerminal implements AST {
 	public NonTerminal(SourcePosition position, AST... astList) throws MismatchException {
 		this.position = position;
 		
-		try {
-			resolveTypes(astList);
-		} catch(BuilderException ex) {
-			throw new MismatchException(ex);
-		}
+//		try {
+//			resolveTypes(astList);
+//		} catch(BuilderException ex) {
+//			throw new MismatchException(ex);
+//		}
 //		if(!resolveTypes(astList)) throw new MismatchException("Nonterminal class " + this.getClass() + " does not match " +
 //				"expression.");
 		
@@ -31,11 +31,13 @@ public abstract class NonTerminal implements AST {
 	public NonTerminal(SourcePosition position, List<AST> astList) throws MismatchException {
 		this.position = position;
 		
-		try {
-			this.astList = resolveTypes(astList);
-		} catch(BuilderException ex) {
-			throw new MismatchException(ex);
-		}
+		this.astList = astList;
+		
+//		try {
+//			this.astList = resolveTypes(astList);
+//		} catch(BuilderException ex) {
+//			throw new MismatchException(ex);
+//		}
 	}
 	
 	public abstract List<Class<? extends AST>> getExpectedASTTypes();
@@ -85,32 +87,32 @@ public abstract class NonTerminal implements AST {
 //		return true;
 //	}
 	
-	private List<AST> resolveTypes(AST...astList) throws BuilderException {
-		return resolveTypes(Arrays.asList(astList));
-	}
-	
-	private List<AST> resolveTypes(List<AST> astList) throws BuilderException {
-		ASTPattern pattern = getASTPattern();
-		System.out.println("Matching " + pattern + " against " + astList);
-		System.out.println("Pattern: " + pattern.getPattern().pattern());
-		try {
-			astList = pattern.match(astList);
-		} catch(MismatchException ex) {
-			throw new BuilderException("Cannot get " + this.getClass() + " from provided nodes");
-		}
-//		if(pattern.match(astList)) {
-//			/*
-//			 * TODO: Have pattern memorize the group that matched, and return it as an
-//			 * ordered sequence of nodes
-//			 */
-//			//DEBUG: just a method breaker.
-//			return astList;
-//		} else {
-////			System.out.println("NO MATCH");
-////			throw new BuilderException("Cannot get " + this.getClass() + " from provided nodes");
+//	private List<AST> resolveTypes(AST...astList) throws BuilderException {
+//		return resolveTypes(Arrays.asList(astList));
+//	}
+//	
+//	private List<AST> resolveTypes(List<AST> astList) throws BuilderException {
+//		ASTPattern pattern = getASTPattern();
+//		System.out.println("Matching " + pattern + " against " + astList);
+//		System.out.println("Pattern: " + pattern.getPattern().pattern());
+//		try {
+//			astList = pattern.match(astList);
+//		} catch(MismatchException ex) {
+//			throw new BuilderException("Cannot get " + this.getClass() + " from provided nodes");
 //		}
-		return astList;
-	}
+////		if(pattern.match(astList)) {
+////			/*
+////			 * TODO: Have pattern memorize the group that matched, and return it as an
+////			 * ordered sequence of nodes
+////			 */
+////			//DEBUG: just a method breaker.
+////			return astList;
+////		} else {
+//////			System.out.println("NO MATCH");
+//////			throw new BuilderException("Cannot get " + this.getClass() + " from provided nodes");
+////		}
+//		return astList;
+//	}
 	
 	/**
 	 * @return syntax restriction on this particular variety of NonTerminal

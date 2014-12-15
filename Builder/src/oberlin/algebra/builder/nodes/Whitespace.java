@@ -5,8 +5,8 @@ import oberlin.builder.parser.SourcePosition;
 
 public class Whitespace extends Terminal {
 
-	public Whitespace(SourcePosition position, String spelling) {
-		super(position, spelling);
+	public Whitespace(String spelling, SourcePosition position) {
+		super(spelling, position);
 	}
 
 }

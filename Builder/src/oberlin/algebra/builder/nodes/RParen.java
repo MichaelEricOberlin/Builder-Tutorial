@@ -5,8 +5,8 @@ import oberlin.builder.parser.SourcePosition;
 
 public class RParen extends Terminal {
 
-	public RParen(SourcePosition position, String spelling) {
-		super(position, spelling);
+	public RParen(String spelling, SourcePosition position) {
+		super(spelling, position);
 	}
 
 }

@@ -4,7 +4,7 @@ import oberlin.builder.parser.SourcePosition;
 
 public class LineComment extends Comment {
 
-	public LineComment(SourcePosition position, String spelling) {
+	public LineComment(String spelling, SourcePosition position) {
 		super(position, spelling);
 	}
 

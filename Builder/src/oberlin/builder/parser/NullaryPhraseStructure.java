@@ -1,19 +1,19 @@
 package oberlin.builder.parser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiFunction;
 
 import oberlin.builder.parser.ast.AST;
 
-public enum NullaryPhraseStructure implements PhraseStructure {
-	NULLARY;
+public class NullaryPhraseStructure implements PhraseStructure {
 
-	/**
-	 * Always returns true, on account of Nullary nature of class
-	 */
 	@Override
-	public boolean match(List<AST> treeList) {
-		return true;
+	public Map<Class<? extends AST>, BiFunction<Parser2<?>, SourcePosition, ? extends AST>> getHandlerMap() {
+		final Map<Class<? extends AST>, BiFunction<Parser2<?>, SourcePosition, ? extends AST>> map = new HashMap<>();
+		return map;
 	}
 
 }

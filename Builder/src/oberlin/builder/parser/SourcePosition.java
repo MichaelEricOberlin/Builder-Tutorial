@@ -43,4 +43,13 @@ public class SourcePosition {
 		return new SourcePosition(start + 1, finish + 1);
 	}
 	
+	// INTRINSIC CLASSES
+	public class Last extends SourcePosition {
+		public Last() {
+			//NOTE: MICK: There must be a better way to get around this. Look at it
+			//in your refactoring.
+			setStart(Integer.MAX_VALUE);
+			setFinish(Integer.MAX_VALUE);
+		}
+	}
 }

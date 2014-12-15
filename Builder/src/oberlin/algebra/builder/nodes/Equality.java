@@ -32,11 +32,11 @@ public class Equality extends NonTerminal {
 		return expected;
 	}
 	
-	@Override
-	public void accept(Visitor visitor) {
-		// TODO Auto-generated method stub
-		
-	}
+//	@Override
+//	public void accept(Visitor visitor) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 
 	@Override
 	protected ASTPattern getASTPattern() {

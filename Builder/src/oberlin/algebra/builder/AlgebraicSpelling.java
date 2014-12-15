@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import oberlin.builder.TerminalSpelling;
 import oberlin.builder.TerminalSpellingHandler;
+import oberlin.builder.parser.SourcePosition;
 import oberlin.builder.parser.ast.AST;
 import oberlin.algebra.builder.nodes.*;
 
@@ -25,24 +26,24 @@ public enum AlgebraicSpelling implements TerminalSpelling {
 		WHITESPACE(Pattern.compile("^\\s+"), GrammarType.COMMENT, new TerminalSpellingHandler<Whitespace>(){
 
 			@Override
-			public Whitespace getTerminal(String spelling) {
-				return new Whitespace(spelling);
+			public Whitespace getTerminal(String spelling, SourcePosition position) {
+				return new Whitespace(spelling, position);
 			}
 			
 		}),
 		BLOCK_COMMENT(Pattern.compile("^/\\*.*?\\*/"), GrammarType.COMMENT, new TerminalSpellingHandler<BlockComment>(){
 
 			@Override
-			public BlockComment getTerminal(String spelling) {
-				return new BlockComment(spelling);
+			public BlockComment getTerminal(String spelling, SourcePosition position) {
+				return new BlockComment(spelling, position);
 			}
 			
 		}),
 		LINE_COMMENT(Pattern.compile("^//.*+$"), GrammarType.COMMENT, new TerminalSpellingHandler<LineComment>(){
 
 			@Override
-			public LineComment getTerminal(String spelling) {
-				return new LineComment(spelling);
+			public LineComment getTerminal(String spelling, SourcePosition position) {
+				return new LineComment(spelling, position);
 			}
 			
 		}),
@@ -51,32 +52,32 @@ public enum AlgebraicSpelling implements TerminalSpelling {
 		NOMINAL(Pattern.compile("^[\\D&&\\w]\\w+"), GrammarType.KEEP, new TerminalSpellingHandler<Nominal>(){
 
 			@Override
-			public Nominal getTerminal(String spelling) {
-				return new Nominal(spelling);
+			public Nominal getTerminal(String spelling, SourcePosition position) {
+				return new Nominal(spelling, position);
 			}
 			
 		}),
 		NUMERIC(Pattern.compile("^\\d+"), GrammarType.KEEP, new TerminalSpellingHandler<Numeric>(){
 
 			@Override
-			public Numeric getTerminal(String spelling) {
-				return new Numeric(spelling);
+			public Numeric getTerminal(String spelling, SourcePosition position) {
+				return new Numeric(spelling, position);
 			}
 			
 		}),
 		OPERATOR(Pattern.compile("^[+-/\\\\÷\\*×\\^]"), GrammarType.KEEP, new TerminalSpellingHandler<Operator>(){
 
 			@Override
-			public Operator getTerminal(String spelling) {
-				return new Operator(spelling);
+			public Operator getTerminal(String spelling, SourcePosition position) {
+				return new Operator(spelling, position);
 			}
 			
 		}),
 		EQUATOR(Pattern.compile("^!?=?[=><]"), GrammarType.KEEP, new TerminalSpellingHandler<Equator>(){
 
 			@Override
-			public Equator getTerminal(String spelling) {
-				return new Equator(spelling);
+			public Equator getTerminal(String spelling, SourcePosition position) {
+				return new Equator(spelling, position);
 			}
 			
 		}),
@@ -85,16 +86,16 @@ public enum AlgebraicSpelling implements TerminalSpelling {
 		LPAREN(Pattern.compile("^\\("), GrammarType.KEEP, new TerminalSpellingHandler<LParen>(){
 
 			@Override
-			public LParen getTerminal(String spelling) {
-				return new LParen(spelling);
+			public LParen getTerminal(String spelling, SourcePosition position) {
+				return new LParen(spelling, position);
 			}
 			
 		}),
 		RPAREN(Pattern.compile("^\\)"), GrammarType.KEEP, new TerminalSpellingHandler<RParen>(){
 
 			@Override
-			public RParen getTerminal(String spelling) {
-				return new RParen(spelling);
+			public RParen getTerminal(String spelling, SourcePosition position) {
+				return new RParen(spelling, position);
 			}
 			
 		})
@@ -136,11 +137,11 @@ public enum AlgebraicSpelling implements TerminalSpelling {
 	}
 
 	@Override
-	public List<AST> manageToken(Matcher matcher) {
+	public List<AST> manageToken(Matcher matcher, SourcePosition position) {
 		List<AST> ret = new LinkedList<>();
 		switch(this.type) {
 		case KEEP:
-			ret.add(handler.getTerminal(matcher.group()));
+			ret.add(handler.getTerminal(matcher.group(), position));
 			break;
 		case COMMENT:
 			//Just ignore it

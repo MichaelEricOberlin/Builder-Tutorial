@@ -16,11 +16,11 @@ public class Expression extends NonTerminal {
 		super(position, astList);
 	}
 
-	@Override
-	public void accept(Visitor visitor) {
-		// TODO Auto-generated method stub
-
-	}
+//	@Override
+//	public void accept(Visitor visitor) {
+//		// TODO Auto-generated method stub
+//
+//	}
 
 	/*
 	 * TODO: Set up clauses for ASTs, not direct references. There are many occasions during which

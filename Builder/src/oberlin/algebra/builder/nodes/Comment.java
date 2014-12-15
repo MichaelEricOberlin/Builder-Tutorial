@@ -6,7 +6,7 @@ import oberlin.builder.parser.SourcePosition;
 public abstract class Comment extends Terminal {
 
 	public Comment(SourcePosition position, String spelling) {
-		super(position, spelling);
+		super(spelling, position);
 	}
 
 }
