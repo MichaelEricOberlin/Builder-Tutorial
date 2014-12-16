@@ -1,5 +1,8 @@
 package oberlin.builder;
 
+import java.util.Collections;
+import java.util.List;
+
 import oberlin.builder.parser.SourcePosition;
 import oberlin.builder.parser.ast.AST;
 import oberlin.builder.parser.ast.Position;
@@ -42,5 +45,15 @@ public class Terminal implements AST {
 	@Override
 	public SourcePosition getPosition() {
 		return position;
+	}
+	
+	@Override
+	public void printContainedNodes() {
+		System.out.println(this);
+	}
+	
+	@Override
+	public List<AST> getContainedNodes() {
+		return Collections.emptyList();
 	}
 }

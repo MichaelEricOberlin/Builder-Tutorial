@@ -33,6 +33,9 @@ public abstract class Builder {
 		//NOTE: This is technically an exclusive part of the algebra builder. It should be abstracted out.
 		AST program = parser.parseProgram(Program.class);
 		
+		//DEBUG
+		analyzeTree(program);
+		
 		//TODO: Generate AST with Parser
 		
 		//TODO: Generate Object Program with code generator
@@ -53,20 +56,28 @@ public abstract class Builder {
 		return new NullaryParser(tokens);
 	}
 
-	public Scanner getScanner() {
+	public Scanner<?> getScanner() {
 		return scanner;
 	}
 
-	public void setScanner(Scanner scanner) {
+	public void setScanner(Scanner<?> scanner) {
 		this.scanner = scanner;
 	}
 
-	protected Parser2 getParser() {
+	protected Parser2<?> getParser() {
 		return parser;
 	}
 
-	protected void setParser(Parser2 parser) {
+	protected void setParser(Parser2<?> parser) {
 		this.parser = parser;
+	}
+	
+	//DEBUG
+	private void analyzeTree(AST ast) {
+		ast.printContainedNodes();
+		for(AST node : ast.getContainedNodes()) {
+			analyzeTree(node);
+		}
 	}
 	
 }

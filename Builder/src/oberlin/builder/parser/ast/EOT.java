@@ -1,5 +1,8 @@
 package oberlin.builder.parser.ast;
 
+import java.util.Collections;
+import java.util.List;
+
 import oberlin.builder.parser.SourcePosition;
 import oberlin.builder.visitor.Visitor;
 
@@ -23,5 +26,14 @@ public final class EOT implements AST {
 		return null;
 	}
 
+	@Override
+	public void printContainedNodes() {
+		System.out.println("EOT");
+	}
+	
+	@Override
+	public List<AST> getContainedNodes() {
+		return Collections.emptyList();
+	}
 
 }

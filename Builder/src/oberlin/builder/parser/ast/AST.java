@@ -1,5 +1,7 @@
 package oberlin.builder.parser.ast;
 
+import java.util.List;
+
 import oberlin.builder.codegenerator.RuntimeEntity;
 import oberlin.builder.parser.Parser2;
 import oberlin.builder.parser.SourcePosition;
@@ -22,4 +24,8 @@ public interface AST {
 	public default void accept(Visitor visitor, Parser2<?> parser, SourcePosition position) {
 		visitor.visit(getClass(), parser, position);
 	}
+
+	public void printContainedNodes();
+	
+	public List<AST> getContainedNodes();
 }

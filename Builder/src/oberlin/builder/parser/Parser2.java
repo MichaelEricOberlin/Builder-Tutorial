@@ -59,7 +59,11 @@ public abstract class Parser2<V extends Visitor> {
 	public void forceAccept() {
 		previousTokenPosition = currentTokenPosition;
 		currentTokenPosition = currentTokenPosition.increment();
-		currentToken = astList.get(currentTokenPosition.getStart());
+		try {
+			currentToken = astList.get(currentTokenPosition.getStart());
+		} catch(IndexOutOfBoundsException ex) {
+			currentToken = new EOT();
+		}
 	}
 	
 	/**
@@ -67,7 +71,7 @@ public abstract class Parser2<V extends Visitor> {
 	 * This is the first AST at the beginning of the phrase.
 	 * @param position element to record the begin index into.
 	 */
-	private void start(SourcePosition position) {
+	public void start(SourcePosition position) {
 		position.setStart(currentTokenPosition.getStart());
 	}
 	
@@ -76,7 +80,7 @@ public abstract class Parser2<V extends Visitor> {
 	 * This is the last AST at the end of the phrase.
 	 * @param position element to record the end index into.
 	 */
-	private void finish(SourcePosition position) {
+	public void finish(SourcePosition position) {
 		position.setFinish(currentTokenPosition.getFinish());
 	}
 	
@@ -91,6 +95,7 @@ public abstract class Parser2<V extends Visitor> {
 	 * an enumeration that overrides an interface; or a function map. 
 	 */
 	public AST parseProgram(Class<? extends AST> rootClass) {
+//		System.out.println("Root class: " + rootClass);
 		return visitor.visit(rootClass, this, currentTokenPosition);
 	}
 
@@ -108,6 +113,10 @@ public abstract class Parser2<V extends Visitor> {
 	
 	public V getVisitor() {
 		return visitor;
+	}
+	
+	public ErrorReporter getErrorReporter() {
+		return reporter;
 	}
 	
 	/*

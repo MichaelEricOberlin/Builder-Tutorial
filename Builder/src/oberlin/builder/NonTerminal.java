@@ -22,9 +22,11 @@ public abstract class NonTerminal implements AST {
 //				"expression.");
 		
 		List<AST> list = new ArrayList<>();
+		
 		for(AST ast : astList) {
 			list.add(ast);
 		}
+		
 		this.astList = list; 
 	}
 	
@@ -127,5 +129,19 @@ public abstract class NonTerminal implements AST {
 	@Override
 	public SourcePosition getPosition() {
 		return this.position;
+	}
+	
+	//DEBUG
+	@Override
+	public void printContainedNodes() {
+		for(AST ast : astList) {
+			System.out.print(ast + " ");
+		}
+		System.out.println();
+	}
+	
+	@Override
+	public List<AST> getContainedNodes() {
+		return astList;
 	}
 }
