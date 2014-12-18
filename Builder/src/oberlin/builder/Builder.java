@@ -52,6 +52,30 @@ public abstract class Builder {
 		
 	}
 	
+	//TODO: MICK: Remove redundancies before release.
+	public AST getParseTree(String code) {
+		List<AST> tokens = (List<AST>) scanner.apply(new Terminal(code, new SourcePosition()));
+		
+		parser = createParser(tokens);
+		
+		//We now have a list of Terminals, ready to be constructed into an AST via a Parser.
+		/*
+		 * Note that scanner uses a TerminalSpelling enumeration. Scanner is only interested in terminals.
+		 * The complete grammar of the language goes beyond that, and is also interested in the order
+		 * of the terminals. This is where PhraseStructure comes in to play.
+		 */
+		
+		/*
+		 * Possible Issue: Parser is destroying all of the contents of code. However, this may ultimately
+		 * be irrelevant.
+		 */
+		
+		//NOTE: This is technically an exclusive part of the algebra builder. It should be abstracted out.
+		AST program = parser.parseProgram(Program.class);
+		
+		return program;
+	}
+	
 	public Parser2<?> createParser(List<AST> tokens) {
 		return new NullaryParser(tokens);
 	}
