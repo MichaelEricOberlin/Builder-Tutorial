@@ -24,9 +24,6 @@ public class ASTPattern {
 	 * @param pattern regular expression showing physical relationship of type names in this pattern
 	 */
 	public ASTPattern(Map<String, Class<? extends AST>> typeNameMap, Pattern pattern) {
-		System.out.println("Names: ");
-		typeNameMap.keySet().stream().forEach(name->System.out.print(name + " "));
-		System.out.println();
 		this.setTypeNameMap(typeNameMap);
 		
 		StringBuilder regex = new StringBuilder(pattern.pattern());
@@ -77,7 +74,6 @@ public class ASTPattern {
 	public boolean match(List<AST> code) {
 		//first, create a string matching the code list
 		String szCode = makeString(code);
-		System.out.println("szCode from code: " + szCode);
 		
 		//second, check this string against the internal regex
 		Matcher matcher = pattern.matcher(szCode);
@@ -125,15 +121,10 @@ public class ASTPattern {
 		BiMap<String, Class<? extends AST>> nameMap = getTypeNameMap();
 		BiMap<Class<? extends AST>, String> classMap = nameMap.inverse();
 		
-		System.out.print("Code list: ");
-		code.stream().forEach(ast -> System.out.print(ast.getClass() + " "));
-		System.out.println();
-		
 		StringBuilder result = new StringBuilder();
 		for(AST ast : code) {
 			Class<? extends AST> cls = ast.getClass();
 			result.append(classMap.get(cls)).append(" ");
-			System.out.println("String (so far): " + result.toString());
 		}
 		
 		return result.toString();

@@ -43,15 +43,7 @@ public class Identifier extends NonTerminal {
 		 * To correct for this, we may need to jump into ASTExpression, and calculate the exact location of
 		 * each of the parentheticals regarding the independent ASTs. 
 		 */
-//		final ASTPattern pattern = new AlgebraicPattern(Pattern.compile("(NUMERIC)|(NOMINAL)"));
 		final ASTPattern pattern = new AlgebraicPattern(Pattern.compile("NUMERIC"));
-		
-//		System.out.println("ASTPattern Test: ");
-//		List<AST> code = new ArrayList<>();
-//		code.add(new Numeric("1"));
-//		System.out.println(pattern.getPattern().pattern());
-//		System.out.println("String: " + pattern.makeString(code));
-//		System.out.println(pattern.match(code));
 		
 		return pattern;
 	}

@@ -29,34 +29,53 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 				previous.setFinish(0);
 				AST currentToken = parser.getCurrentToken();
 				
-				System.out.println("In apply");
-				
 				//Roughly how it goes:
 //				Command command = parser.getVisitor().visit(Command.class, parser, previous);
 //				program = new Program(command, previous);
 				
+				Equality equality = (Equality) parser.getVisitor().visit(Equality.class, parser, previous);
+				program = new Program(previous, equality);
+//				if(!(current))
+				
 				//DEBUG
-				Operation operation = (Operation) parser.getVisitor().visit(Operation.class, parser, previous);
-				System.out.println("Program's retrieved operation: " + operation);
-				program = new Program(previous, operation);
+//				Operation operation = (Operation) parser.getVisitor().visit(Operation.class, parser, previous);
+//				program = new Program(previous, operation);
+				
 				if(!(currentToken instanceof EOT)) {
 					parser.syntacticError("Expected end of program", currentToken.getClass().toString());
 				}
 				
-				/*//DEBUG
-				System.out.println("Exiting, as per debug, in AlgebraicPhraseStructure's Program BiFunction");
-				System.exit(0);*/
-				
 				return program;
 			}
+		});
+		map.put(Equality.class, new BiFunction<Parser2<?>, SourcePosition, AST>() {
+
+			@Override
+			public AST apply(Parser2<?> parser, SourcePosition position) {
+				Equality equality = null;
+				List<AST> nodes = new ArrayList<>();
+				SourcePosition operationPosition = new SourcePosition();
+				
+				parser.start(operationPosition);
+				//parse operation
+				AST operation = parser.getVisitor().visit(Operation.class, parser, operationPosition);
+				nodes.add(operation);
+				if(Equator.class.isAssignableFrom(parser.getCurrentToken().getClass())) {
+					nodes.add(parser.getCurrentToken());
+					parser.forceAccept();
+					nodes.add(parser.getVisitor().visit(Operation.class, parser, operationPosition));
+				}
+				parser.finish(operationPosition);
+				
+				equality = new Equality(operationPosition, nodes);
+				return equality;
+			}
+			
 		});
 		map.put(Operation.class, new BiFunction<Parser2<?>, SourcePosition, AST>() {
 
 			@Override
 			public AST apply(Parser2<?> parser, SourcePosition position) {
-				System.out.println("In Operation's apply");
-				//DEBUG
-//				(new Exception()).printStackTrace();
 				
 				Operation operation = null;
 				List<AST> nodes = new ArrayList<>();
@@ -68,8 +87,8 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 				nodes.add(identifier);
 				//look for operator
 				if(Operator.class.isAssignableFrom(parser.getCurrentToken().getClass())) {
-					parser.forceAccept();
 					nodes.add(parser.getCurrentToken());
+					parser.forceAccept();
 					nodes.add(parser.getVisitor().visit(Operation.class, parser, operationPosition));
 				}
 				parser.finish(operationPosition);
@@ -83,7 +102,6 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 
 			@Override
 			public AST apply(Parser2<?> parser, SourcePosition position) {
-				System.out.println("In Identifier's apply");
 				
 				Identifier identifier = null;
 				List<AST> nodes = new ArrayList<>();
@@ -91,11 +109,11 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 				
 				parser.start(identifierPosition);
 				if(Nominal.class.isAssignableFrom(parser.getCurrentToken().getClass())) {
-					parser.forceAccept();
 					nodes.add(parser.getCurrentToken());
+					parser.forceAccept();
 				} else if(Numeric.class.isAssignableFrom(parser.getCurrentToken().getClass())) {
-					parser.forceAccept();
 					nodes.add(parser.getCurrentToken());
+					parser.forceAccept();
 				} else {
 					parser.syntacticError("Nominal or numeric token expected", parser.getCurrentToken().getClass().toString());
 				}
@@ -107,73 +125,6 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 			
 		});
 	}
-
-//	PROGRAM(new Function<List<AST>, Boolean>() {
-//
-//		@Override
-//		public Boolean apply(List<AST> t) {
-//			try {
-//				Program program = new Program(t);
-//				t = PhraseStructure.trim(program, t);
-//				return true;
-//			} catch(MismatchException ex) {
-//				return false;
-//			}
-//		}
-//
-//	}),
-//	EQUALITY(new Function<List<AST>, Boolean>() {
-//
-//		@Override
-//		public Boolean apply(List<AST> t) {
-//			try {
-//				Equality equality = new Equality(t);
-//				t = PhraseStructure.trim(equality, t);
-//				return true;
-//			} catch(MismatchException ex) {
-//				return false;
-//			}
-//		}
-//
-//	}),
-//	EXPRESSION(new Function<List<AST>, Boolean>() {
-//
-//		@Override
-//		public Boolean apply(List<AST> t) {
-//			try {
-//				Expression expression = new Expression(t);
-//				t = PhraseStructure.trim(expression, t);
-//				return true;
-//			} catch(MismatchException ex) {
-//				return false;
-//			}
-//		}
-//
-//	}),
-//	IDENTIFIER(new Function<List<AST>, Boolean>() {
-//		@Override
-//		public Boolean apply(List<AST> t) {
-//			try {
-//				Identifier identifier = new Identifier(t);
-//				t = PhraseStructure.trim(identifier, t);
-//				return true;
-//			} catch(MismatchException ex) {
-//				return false;
-//			}
-//		}
-//	});
-//
-//	private Function<List<AST>, Boolean> generator;
-//	
-//	private AlgebraicPhraseStructure(Function<List<AST>, Boolean> generator) {
-//		this.generator = generator;
-//	}
-//	
-//	@Override
-//	public boolean match(List<AST> treeList) {
-//		return this.generator.apply(treeList);
-//	}
-//
 	
 	@Override
 	public Map<Class<? extends AST>, BiFunction<Parser2<?>, SourcePosition, ? extends AST>> getHandlerMap() {

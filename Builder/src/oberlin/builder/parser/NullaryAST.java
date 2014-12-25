@@ -1,5 +1,7 @@
 package oberlin.builder.parser;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +30,16 @@ public class NullaryAST implements AST {
 	@Override
 	public SourcePosition getPosition() {
 		return this.position;
+	}
+
+	@Override
+	public void printContainedNodes() {
+		System.out.println("Nullary");
+	}
+
+	@Override
+	public List<AST> getContainedNodes() {
+		return Collections.emptyList();
 	}
 
 }

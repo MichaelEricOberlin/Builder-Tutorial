@@ -95,7 +95,6 @@ public abstract class Parser2<V extends Visitor> {
 	 * an enumeration that overrides an interface; or a function map. 
 	 */
 	public AST parseProgram(Class<? extends AST> rootClass) {
-//		System.out.println("Root class: " + rootClass);
 		return visitor.visit(rootClass, this, currentTokenPosition);
 	}
 

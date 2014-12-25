@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import oberlin.builder.TerminalSpelling;
 import oberlin.builder.Terminal;
+import oberlin.builder.parser.SourcePosition;
 import oberlin.builder.parser.ast.AST;
 
 public enum NullaryGrammar implements TerminalSpelling {
@@ -19,9 +20,9 @@ public enum NullaryGrammar implements TerminalSpelling {
 	}
 
 	@Override
-	public List<AST> manageToken(Matcher matcher) {
+	public List<AST> manageToken(Matcher matcher, SourcePosition position) {
 		List<AST> returnable = new ArrayList<>();
-		returnable.add(new Terminal(matcher.group()));
+		returnable.add(new Terminal(matcher.group(), position));
 		return returnable;
 	}
 
