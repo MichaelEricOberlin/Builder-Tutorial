@@ -2,8 +2,9 @@ package oberlin.builder.parser.ast;
 
 import java.util.List;
 
-import oberlin.builder.codegenerator.RuntimeEntity;
-import oberlin.builder.parser.Parser2;
+import javax.naming.OperationNotSupportedException;
+
+import oberlin.builder.parser.Parser;
 import oberlin.builder.parser.SourcePosition;
 import oberlin.builder.visitor.*;
 
@@ -21,11 +22,13 @@ public interface AST {
 	
 	public SourcePosition getPosition();
 	
-	public default void accept(Visitor visitor, Parser2<?> parser, SourcePosition position) {
+	public default void accept(Visitor visitor, Parser<?> parser, SourcePosition position) {
 		visitor.visit(getClass(), parser, position);
 	}
 
-	public void printContainedNodes();
+	public default String getContainedNodeNames() throws OperationNotSupportedException {
+		throw new OperationNotSupportedException("getContainedNodeNames() is not implemented by " + this.getClass());
+	}
 	
 	public List<AST> getContainedNodes();
 }

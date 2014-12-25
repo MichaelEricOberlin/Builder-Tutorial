@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 import oberlin.builder.parser.ast.AST;
 
-public class NullaryParser extends Parser2<NullaryPhraseStructure> {
+public class NullaryParser extends Parser<NullaryPhraseStructure> {
 
 	public NullaryParser(List<AST> astList) {
 		super(new NullaryPhraseStructure(), astList, null);
@@ -16,11 +16,6 @@ public class NullaryParser extends Parser2<NullaryPhraseStructure> {
 	public NullaryParser(List<AST> astList, ErrorReporter reporter) {
 		super(new NullaryPhraseStructure(), astList, reporter);
 	}
-
-//	@Override
-//	public Class<NullaryPhraseStructure> getPhraseStructure() {
-//		return NullaryPhraseStructure.class;
-//	}
 
 
 }

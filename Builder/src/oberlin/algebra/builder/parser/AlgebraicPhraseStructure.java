@@ -8,7 +8,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import oberlin.builder.MismatchException;
-import oberlin.builder.parser.Parser2;
+import oberlin.builder.parser.Parser;
 import oberlin.builder.parser.PhraseStructure;
 import oberlin.builder.parser.SourcePosition;
 import oberlin.builder.parser.ast.AST;
@@ -18,11 +18,11 @@ import oberlin.algebra.builder.nodes.*;
 
 public class AlgebraicPhraseStructure implements PhraseStructure {
 	
-	private Map<Class<? extends AST>, BiFunction<Parser2<?>, SourcePosition, ? extends AST>> map = new HashMap<>();
+	private Map<Class<? extends AST>, BiFunction<Parser<?>, SourcePosition, ? extends AST>> map = new HashMap<>();
 	{
-		map.put(Program.class, new BiFunction<Parser2<?>, SourcePosition, AST>() {
+		map.put(Program.class, new BiFunction<Parser<?>, SourcePosition, AST>() {
 			@Override
-			public Program apply(Parser2<?> parser, SourcePosition position) {
+			public Program apply(Parser<?> parser, SourcePosition position) {
 				Program program = null;
 				SourcePosition previous = parser.getPreviousTokenPosition();
 				previous.setStart(0);
@@ -35,11 +35,6 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 				
 				Equality equality = (Equality) parser.getVisitor().visit(Equality.class, parser, previous);
 				program = new Program(previous, equality);
-//				if(!(current))
-				
-				//DEBUG
-//				Operation operation = (Operation) parser.getVisitor().visit(Operation.class, parser, previous);
-//				program = new Program(previous, operation);
 				
 				if(!(currentToken instanceof EOT)) {
 					parser.syntacticError("Expected end of program", currentToken.getClass().toString());
@@ -48,10 +43,10 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 				return program;
 			}
 		});
-		map.put(Equality.class, new BiFunction<Parser2<?>, SourcePosition, AST>() {
+		map.put(Equality.class, new BiFunction<Parser<?>, SourcePosition, AST>() {
 
 			@Override
-			public AST apply(Parser2<?> parser, SourcePosition position) {
+			public AST apply(Parser<?> parser, SourcePosition position) {
 				Equality equality = null;
 				List<AST> nodes = new ArrayList<>();
 				SourcePosition operationPosition = new SourcePosition();
@@ -64,6 +59,11 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 					nodes.add(parser.getCurrentToken());
 					parser.forceAccept();
 					nodes.add(parser.getVisitor().visit(Operation.class, parser, operationPosition));
+				} else {
+					System.out.println(parser);
+					System.out.println(parser.getCurrentToken());
+					System.out.println(parser.getCurrentToken().getPosition());
+					parser.syntacticError("Expected: equator", Integer.toString(parser.getCurrentToken().getPosition().getStart()));
 				}
 				parser.finish(operationPosition);
 				
@@ -72,10 +72,10 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 			}
 			
 		});
-		map.put(Operation.class, new BiFunction<Parser2<?>, SourcePosition, AST>() {
+		map.put(Operation.class, new BiFunction<Parser<?>, SourcePosition, AST>() {
 
 			@Override
-			public AST apply(Parser2<?> parser, SourcePosition position) {
+			public AST apply(Parser<?> parser, SourcePosition position) {
 				
 				Operation operation = null;
 				List<AST> nodes = new ArrayList<>();
@@ -98,10 +98,10 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 			}
 			
 		});
-		map.put(Identifier.class, new BiFunction<Parser2<?>, SourcePosition, AST>() {
+		map.put(Identifier.class, new BiFunction<Parser<?>, SourcePosition, AST>() {
 
 			@Override
-			public AST apply(Parser2<?> parser, SourcePosition position) {
+			public AST apply(Parser<?> parser, SourcePosition position) {
 				
 				Identifier identifier = null;
 				List<AST> nodes = new ArrayList<>();
@@ -127,7 +127,7 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 	}
 	
 	@Override
-	public Map<Class<? extends AST>, BiFunction<Parser2<?>, SourcePosition, ? extends AST>> getHandlerMap() {
+	public Map<Class<? extends AST>, BiFunction<Parser<?>, SourcePosition, ? extends AST>> getHandlerMap() {
 		// TODO Auto-generated method stub
 		return map;
 	}

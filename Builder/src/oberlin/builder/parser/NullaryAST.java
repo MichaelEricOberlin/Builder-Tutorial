@@ -33,8 +33,8 @@ public class NullaryAST implements AST {
 	}
 
 	@Override
-	public void printContainedNodes() {
-		System.out.println("Nullary");
+	public String getContainedNodeNames() {
+		return "Nullary";
 	}
 
 	@Override

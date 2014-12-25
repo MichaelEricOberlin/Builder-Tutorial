@@ -44,7 +44,7 @@ public class SourcePosition {
 	}
 	
 	// INTRINSIC CLASSES
-	public class Last extends SourcePosition {
+	public static class Last extends SourcePosition {
 		public Last() {
 			//NOTE: MICK: There must be a better way to get around this. Look at it
 			//in your refactoring.

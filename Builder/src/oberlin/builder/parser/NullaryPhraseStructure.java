@@ -11,8 +11,8 @@ import oberlin.builder.parser.ast.AST;
 public class NullaryPhraseStructure implements PhraseStructure {
 
 	@Override
-	public Map<Class<? extends AST>, BiFunction<Parser2<?>, SourcePosition, ? extends AST>> getHandlerMap() {
-		final Map<Class<? extends AST>, BiFunction<Parser2<?>, SourcePosition, ? extends AST>> map = new HashMap<>();
+	public Map<Class<? extends AST>, BiFunction<Parser<?>, SourcePosition, ? extends AST>> getHandlerMap() {
+		final Map<Class<? extends AST>, BiFunction<Parser<?>, SourcePosition, ? extends AST>> map = new HashMap<>();
 		return map;
 	}
 

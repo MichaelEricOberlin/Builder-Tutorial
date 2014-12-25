@@ -2,7 +2,6 @@ package oberlin.builder.parser;
 
 import java.util.List;
 
-import oberlin.builder.Terminal;
 import oberlin.builder.parser.ast.AST;
 import oberlin.builder.parser.ast.EOT;
 import oberlin.builder.visitor.Visitor;
@@ -18,7 +17,7 @@ import oberlin.builder.visitor.Visitor;
  * @param <V> the visitor type that the parser uses for creating nonterminal nodes
  * @param <P> the target class for the parsing, intended to be the root of the produced syntax tree
  */
-public abstract class Parser2<V extends Visitor> {
+public abstract class Parser<V extends Visitor> {
 	//Don't have a scanner, did that all at once in the beginning. So,
 	//keep a List<AST> on hand instead.
 	
@@ -29,7 +28,7 @@ public abstract class Parser2<V extends Visitor> {
 	private SourcePosition previousTokenPosition = new SourcePosition();
 	protected V visitor;
 	
-	public Parser2(V visitor, List<AST> astList, ErrorReporter reporter) {
+	public Parser(V visitor, List<AST> astList, ErrorReporter reporter) {
 		this.visitor = visitor;
 		
 		//Do a little defensive programming
@@ -90,11 +89,13 @@ public abstract class Parser2<V extends Visitor> {
 				tokenQuoted + " " + messageTemplate + ": " + pos.getStart() + ".." + pos.getFinish()));
 	}
 	
-	/*
-	 * NOTE: MICK: This could easily be the singular parse method called; with everything else run through
-	 * an enumeration that overrides an interface; or a function map. 
+	/**
+	 * Begin parsing, aiming to create the provided class as a root class for the abstract syntax tree.
+	 * 
+	 * @param rootClass Class of object which should, provided no exceptions, be a tree root.
+	 * @return complete tree, stemming from class rootClass, expressing program.
 	 */
-	public AST parseProgram(Class<? extends AST> rootClass) {
+	public AST parse(Class<? extends AST> rootClass) {
 		return visitor.visit(rootClass, this, currentTokenPosition);
 	}
 
@@ -117,9 +118,5 @@ public abstract class Parser2<V extends Visitor> {
 	public ErrorReporter getErrorReporter() {
 		return reporter;
 	}
-	
-	/*
-	 * New idea. Implement a visitor with a Map<Class<? extends AST>, BiFunction<Parser2, SourcePosition, AST>>.
-	 * Have each visit look up the bifunction by the expected class.
-	 */
+
 }

@@ -5,8 +5,6 @@ import java.util.List;
 
 import oberlin.builder.parser.SourcePosition;
 import oberlin.builder.parser.ast.AST;
-import oberlin.builder.parser.ast.Position;
-import oberlin.builder.visitor.Visitor;
 
 /**
  * Basis of all complete abstract syntax trees. Terminals are basically isolated-tokens known only by their spellings.
@@ -27,11 +25,6 @@ public class Terminal implements AST {
 		return this.spelling;
 	}
 
-//	@Override
-//	public void accept(Visitor visitor) {
-//		visitor.visit(this);
-//	}
-
 	@Override
 	public String toString() {
 		return getSpelling();
@@ -48,8 +41,8 @@ public class Terminal implements AST {
 	}
 	
 	@Override
-	public void printContainedNodes() {
-		System.out.println(this);
+	public String getContainedNodeNames() {
+		return this.toString();
 	}
 	
 	@Override

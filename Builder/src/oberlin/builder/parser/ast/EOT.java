@@ -23,12 +23,12 @@ public final class EOT implements AST {
 
 	@Override
 	public SourcePosition getPosition() {
-		return null;
+		return new SourcePosition.Last();
 	}
 
 	@Override
-	public void printContainedNodes() {
-		System.out.println("EOT");
+	public String getContainedNodeNames() {
+		return "EOT";
 	}
 	
 	@Override

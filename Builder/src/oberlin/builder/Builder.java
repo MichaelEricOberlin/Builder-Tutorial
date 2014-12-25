@@ -3,6 +3,8 @@ package oberlin.builder;
 import java.util.List;
 import java.util.logging.*;
 
+import javax.naming.OperationNotSupportedException;
+
 import oberlin.algebra.builder.nodes.Program;
 import oberlin.builder.scanner.*;
 import oberlin.builder.parser.*;
@@ -11,7 +13,7 @@ import oberlin.builder.parser.ast.*;
 public abstract class Builder {
 	private Logger logger = Logger.getLogger("Builder");
 	private Scanner<?> scanner = new NullaryScanner();
-	private Parser2<?> parser;
+	private Parser<?> parser;
 	
 	public Object build(String code) throws BuilderException {
 		List<AST> tokens = (List<AST>) scanner.apply(new Terminal(code, new SourcePosition()));
@@ -31,7 +33,7 @@ public abstract class Builder {
 		 */
 		
 		//NOTE: This is technically an exclusive part of the algebra builder. It should be abstracted out.
-		AST program = parser.parseProgram(Program.class);
+		AST program = parser.parse(Program.class);
 		
 		//DEBUG
 		analyzeTree(program);
@@ -71,12 +73,12 @@ public abstract class Builder {
 		 */
 		
 		//NOTE: This is technically an exclusive part of the algebra builder. It should be abstracted out.
-		AST program = parser.parseProgram(Program.class);
+		AST program = parser.parse(Program.class);
 		
 		return program;
 	}
 	
-	public Parser2<?> createParser(List<AST> tokens) {
+	public Parser<?> createParser(List<AST> tokens) {
 		return new NullaryParser(tokens);
 	}
 
@@ -88,19 +90,24 @@ public abstract class Builder {
 		this.scanner = scanner;
 	}
 
-	protected Parser2<?> getParser() {
+	protected Parser<?> getParser() {
 		return parser;
 	}
 
-	protected void setParser(Parser2<?> parser) {
+	protected void setParser(Parser<?> parser) {
 		this.parser = parser;
 	}
 	
 	//DEBUG
 	private void analyzeTree(AST ast) {
-		ast.printContainedNodes();
-		for(AST node : ast.getContainedNodes()) {
-			analyzeTree(node);
+		try {
+			System.out.println(ast.getContainedNodeNames());
+			
+			for(AST node : ast.getContainedNodes()) {
+				analyzeTree(node);
+			}
+		} catch(OperationNotSupportedException ex) {
+			System.out.println(ex.getMessage());
 		}
 	}
 	
