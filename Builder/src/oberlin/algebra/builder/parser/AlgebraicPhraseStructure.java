@@ -8,6 +8,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import oberlin.builder.MismatchException;
+import oberlin.builder.Terminal;
 import oberlin.builder.parser.Parser;
 import oberlin.builder.parser.PhraseStructure;
 import oberlin.builder.parser.SourcePosition;
@@ -18,7 +19,8 @@ import oberlin.algebra.builder.nodes.*;
 
 public class AlgebraicPhraseStructure implements PhraseStructure {
 	
-	private Map<Class<? extends AST>, BiFunction<Parser<?>, SourcePosition, ? extends AST>> map = new HashMap<>();
+	private Map<Class<? extends AST>, BiFunction<Parser<?>, 
+		SourcePosition, ? extends AST>> map = new HashMap<>();
 	{
 		map.put(Program.class, new BiFunction<Parser<?>, SourcePosition, AST>() {
 			@Override
@@ -29,15 +31,13 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 				previous.setFinish(0);
 				AST currentToken = parser.getCurrentToken();
 				
-				//Roughly how it goes:
-//				Command command = parser.getVisitor().visit(Command.class, parser, previous);
-//				program = new Program(command, previous);
-				
-				Equality equality = (Equality) parser.getVisitor().visit(Equality.class, parser, previous);
+				Equality equality = (Equality) parser.getVisitor()
+						.visit(Equality.class, parser, previous);
 				program = new Program(previous, equality);
 				
 				if(!(currentToken instanceof EOT)) {
-					parser.syntacticError("Expected end of program", currentToken.getClass().toString());
+					parser.syntacticError("Expected end of program",
+							currentToken.getClass().toString());
 				}
 				
 				return program;
@@ -53,17 +53,17 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 				
 				parser.start(operationPosition);
 				//parse operation
-				AST operation = parser.getVisitor().visit(Operation.class, parser, operationPosition);
+				AST operation = parser.getVisitor().visit(Operation.class,
+						parser, operationPosition);
 				nodes.add(operation);
-				if(Equator.class.isAssignableFrom(parser.getCurrentToken().getClass())) {
+				if(parser.getCurrentToken() instanceof Equator) {
 					nodes.add(parser.getCurrentToken());
 					parser.forceAccept();
-					nodes.add(parser.getVisitor().visit(Operation.class, parser, operationPosition));
+					nodes.add(parser.getVisitor().visit(Operation.class, parser,
+							operationPosition));
 				} else {
-					System.out.println(parser);
-					System.out.println(parser.getCurrentToken());
-					System.out.println(parser.getCurrentToken().getPosition());
-					parser.syntacticError("Expected: equator", Integer.toString(parser.getCurrentToken().getPosition().getStart()));
+					parser.syntacticError("Expected: equator", Integer.toString(
+							parser.getCurrentToken().getPosition().getStart()));
 				}
 				parser.finish(operationPosition);
 				
@@ -83,13 +83,15 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 				
 				parser.start(operationPosition);
 				//parse identifier
-				AST identifier = parser.getVisitor().visit(Identifier.class, parser, operationPosition);
+				AST identifier = parser.getVisitor().visit(Identifier.class,
+						parser, operationPosition);
 				nodes.add(identifier);
 				//look for operator
-				if(Operator.class.isAssignableFrom(parser.getCurrentToken().getClass())) {
+				if(parser.getCurrentToken() instanceof Operator) {
 					nodes.add(parser.getCurrentToken());
 					parser.forceAccept();
-					nodes.add(parser.getVisitor().visit(Operation.class, parser, operationPosition));
+					nodes.add(parser.getVisitor().visit(Operation.class,
+							parser, operationPosition));
 				}
 				parser.finish(operationPosition);
 				
@@ -108,20 +110,20 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 				SourcePosition identifierPosition = new SourcePosition();
 				
 				parser.start(identifierPosition);
-				if(LParen.class.isAssignableFrom(parser.getCurrentToken().getClass())) {
+				if(parser.getCurrentToken() instanceof LParen) {
 					nodes.add(parser.getCurrentToken());
 					parser.forceAccept();
 					
-					//TODO: parse expression…
-					nodes.add(getHandlerMap().get(Operation.class).apply(parser, identifierPosition));
+					nodes.add(getHandlerMap().get(Operation.class)
+							.apply(parser, identifierPosition));
 					parser.accept(Operation.class);
 					
 					nodes.add(parser.getCurrentToken());
 					parser.accept(RParen.class);
-				} else if(Nominal.class.isAssignableFrom(parser.getCurrentToken().getClass())) {
+				} else if(parser.getCurrentToken() instanceof Nominal) {
 					nodes.add(parser.getCurrentToken());
 					parser.forceAccept();
-				} else if(Numeric.class.isAssignableFrom(parser.getCurrentToken().getClass())) {
+				} else if(parser.getCurrentToken() instanceof Numeric) {
 					nodes.add(parser.getCurrentToken());
 					parser.forceAccept();
 				} else {
