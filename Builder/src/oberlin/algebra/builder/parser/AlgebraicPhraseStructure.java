@@ -108,7 +108,17 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 				SourcePosition identifierPosition = new SourcePosition();
 				
 				parser.start(identifierPosition);
-				if(Nominal.class.isAssignableFrom(parser.getCurrentToken().getClass())) {
+				if(LParen.class.isAssignableFrom(parser.getCurrentToken().getClass())) {
+					nodes.add(parser.getCurrentToken());
+					parser.forceAccept();
+					
+					//TODO: parse expression…
+					nodes.add(getHandlerMap().get(Operation.class).apply(parser, identifierPosition));
+					parser.accept(Operation.class);
+					
+					nodes.add(parser.getCurrentToken());
+					parser.accept(RParen.class);
+				} else if(Nominal.class.isAssignableFrom(parser.getCurrentToken().getClass())) {
 					nodes.add(parser.getCurrentToken());
 					parser.forceAccept();
 				} else if(Numeric.class.isAssignableFrom(parser.getCurrentToken().getClass())) {
