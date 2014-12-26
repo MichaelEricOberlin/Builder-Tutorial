@@ -5,16 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
-import oberlin.builder.MismatchException;
-import oberlin.builder.Terminal;
 import oberlin.builder.parser.Parser;
 import oberlin.builder.parser.PhraseStructure;
 import oberlin.builder.parser.SourcePosition;
 import oberlin.builder.parser.ast.AST;
 import oberlin.builder.parser.ast.EOT;
-import oberlin.builder.visitor.VisitHandler;
 import oberlin.algebra.builder.nodes.*;
 
 public class AlgebraicPhraseStructure implements PhraseStructure {
@@ -27,8 +23,6 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 			public Program apply(Parser<?> parser, SourcePosition position) {
 				Program program = null;
 				SourcePosition previous = parser.getPreviousTokenPosition();
-				previous.setStart(0);
-				previous.setFinish(0);
 				AST currentToken = parser.getCurrentToken();
 				
 				Equality equality = (Equality) parser.getVisitor()
@@ -127,7 +121,8 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 					nodes.add(parser.getCurrentToken());
 					parser.forceAccept();
 				} else {
-					parser.syntacticError("Nominal or numeric token expected", parser.getCurrentToken().getClass().toString());
+					parser.syntacticError("Nominal or numeric token expected",
+							parser.getCurrentToken().getClass().toString());
 				}
 				parser.finish(identifierPosition);
 				identifier = new Identifier(identifierPosition, nodes);
