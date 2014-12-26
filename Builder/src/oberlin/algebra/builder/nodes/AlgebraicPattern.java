@@ -14,7 +14,6 @@ public class AlgebraicPattern extends ASTPattern {
 
 	private static Map<String, Class<? extends AST>> getNameMap() {
 		final Map<String, Class<? extends AST>> nameMap = new HashMap<>();
-		nameMap.put("EXPRESSION", Expression.class);
 		nameMap.put("EQUALITY", Equality.class);
 		nameMap.put("PROGRAM", Program.class);
 		nameMap.put("EQUATOR", Equator.class);
