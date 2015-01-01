@@ -21,21 +21,62 @@ public class AlgebraicPhraseStructure implements PhraseStructure {
 		map.put(Program.class, new BiFunction<Parser<?>, SourcePosition, AST>() {
 			@Override
 			public Program apply(Parser<?> parser, SourcePosition position) {
+				//TODO: Have Program include a limitless number of equalities.
+				
 				Program program = null;
-				SourcePosition previous = parser.getPreviousTokenPosition();
-				AST currentToken = parser.getCurrentToken();
+//				SourcePosition previous = parser.getPreviousTokenPosition();
+//				AST currentToken = parser.getCurrentToken();
+				List<AST> nodes = new ArrayList<>();
+//				SourcePosition programPosition = new SourcePosition();
 				
-				Equality equality = (Equality) parser.getVisitor()
-						.visit(Equality.class, parser, previous);
-				program = new Program(previous, equality);
+				parser.start(position);
+				Command command = (Command) parser.getVisitor()
+						.visit(Command.class, parser, position);
+//				Equality equality = (Equality) parser.getVisitor()
+//						.visit(Equality.class, parser, position/*previous*/);
 				
-				if(!(currentToken instanceof EOT)) {
-					parser.syntacticError("Expected end of program",
-							currentToken.getClass().toString());
+				if(parser.getCurrentToken() instanceof NewLine) {
+					System.err.println("NewLine found");
+					parser.forceAccept();
+					nodes.add(parser.getVisitor().visit(Equality.class, parser, position));
 				}
+				if(!(parser.getCurrentToken() instanceof EOT)) {
+					parser.syntacticError("Expected end of program",
+							parser.getCurrentToken().getClass().toString());
+				}
+				parser.finish(position);
+				program = new Program(position, command);
 				
 				return program;
 			}
+		});
+		map.put(Command.class, new BiFunction<Parser<?>, SourcePosition, AST>() {
+
+			@Override
+			public AST apply(Parser<?> parser, SourcePosition position) {
+				Command command = null;
+				List<AST> nodes = new ArrayList<>();
+				SourcePosition commandPosition = new SourcePosition();
+				
+				parser.start(commandPosition);
+				
+				//parse first equality
+				AST equality = parser.getVisitor()
+						.visit(Equality.class, parser, position);
+				nodes.add(equality);
+				if(parser.getCurrentToken() instanceof NewLine) {
+					nodes.add(parser.getCurrentToken());
+					parser.forceAccept();
+					if(!(parser.getCurrentToken() instanceof EOT)) {
+						nodes.add(parser.getVisitor().visit(Command.class, parser, commandPosition));
+					}
+				}
+				parser.finish(commandPosition);
+				
+				command = new Command(commandPosition, nodes);
+				return command;
+			}
+			
 		});
 		map.put(Equality.class, new BiFunction<Parser<?>, SourcePosition, AST>() {
 

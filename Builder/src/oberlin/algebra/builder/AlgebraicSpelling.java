@@ -23,8 +23,10 @@ import oberlin.algebra.builder.nodes.*;
  */
 public enum AlgebraicSpelling implements TerminalSpelling {
 		//COMMENTS
-		WHITESPACE(Pattern.compile("^\\s+"), GrammarType.COMMENT, new TerminalSpellingHandler<Whitespace>(){
-
+		WHITESPACE(Pattern.compile("[\\s&&[^\\r\\n]]+"/*"^\\s+"*/), GrammarType.COMMENT, new TerminalSpellingHandler<Whitespace>(){
+			//NOTE: We are looking for all whitespace other than newlines! Thus, \r and \n must be ignored.
+			//Hence, the strange regex above. (To look for the same item in two places has undefined and
+			//generally unpleasant behavior.)
 			@Override
 			public Whitespace getTerminal(String spelling, SourcePosition position) {
 				return new Whitespace(spelling, position);
@@ -98,6 +100,13 @@ public enum AlgebraicSpelling implements TerminalSpelling {
 				return new RParen(spelling, position);
 			}
 			
+		}),
+		//NOTE: "\\r?\\n" also qualifies as whitespace! Remove it from the whitespace search!
+		NEWLINE(Pattern.compile("\\n"), GrammarType.KEEP, new TerminalSpellingHandler<NewLine>(){
+			@Override
+			public NewLine getTerminal(String spelling, SourcePosition position) {
+				return new NewLine(spelling, position);
+			}
 		})
 	;
 	
