@@ -10,7 +10,7 @@ import oberlin.builder.Terminal;
 import oberlin.builder.parser.SourcePosition;
 import oberlin.builder.parser.ast.AST;
 
-public enum NullaryGrammar implements TerminalSpelling {
+public enum NullarySpelling implements TerminalSpelling {
 	ANY;
 
 	@Override

@@ -4,7 +4,7 @@ import java.util.*;
 
 import oberlin.builder.parser.ast.AST;
 
-public class NullaryScanner implements Scanner<NullaryGrammar> {
+public class NullaryScanner implements Scanner<NullarySpelling> {
 
 	@Override
 	public List<AST> apply(AST code) {
@@ -13,8 +13,8 @@ public class NullaryScanner implements Scanner<NullaryGrammar> {
 	}
 
 	@Override
-	public Class<NullaryGrammar> getSpelling() {
-		return NullaryGrammar.class;
+	public Class<NullarySpelling> getSpelling() {
+		return NullarySpelling.class;
 	}
 
 }
