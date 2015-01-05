@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import oberlin.builder.parser.ast.AST;
+import oberlin.builder.reporter.ErrorReporter;
 
 public class NullaryParser extends Parser<NullaryPhraseStructure> {
 

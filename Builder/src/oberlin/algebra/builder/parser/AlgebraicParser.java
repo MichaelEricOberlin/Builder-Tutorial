@@ -2,9 +2,9 @@ package oberlin.algebra.builder.parser;
 
 import java.util.List;
 
-import oberlin.builder.parser.ErrorReporter;
 import oberlin.builder.parser.Parser;
 import oberlin.builder.parser.ast.AST;
+import oberlin.builder.reporter.ErrorReporter;
 
 public class AlgebraicParser extends Parser<AlgebraicPhraseStructure> {
 	

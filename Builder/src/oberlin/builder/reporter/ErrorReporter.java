@@ -1,4 +1,4 @@
-package oberlin.builder.parser;
+package oberlin.builder.reporter;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
@@ -37,5 +37,9 @@ public class ErrorReporter {
 			e.printStackTrace();
 		} finally {
 		}
+	}
+	
+	public int errorCount() {
+		return errors.size();
 	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import oberlin.builder.parser.ast.AST;
 import oberlin.builder.parser.ast.EOT;
+import oberlin.builder.reporter.ErrorReporter;
 import oberlin.builder.visitor.Visitor;
 
 /**

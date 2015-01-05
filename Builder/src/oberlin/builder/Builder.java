@@ -6,14 +6,18 @@ import java.util.logging.*;
 import javax.naming.OperationNotSupportedException;
 
 import oberlin.algebra.builder.nodes.Program;
+import oberlin.builder.contextanalysis.*;
+import oberlin.builder.reporter.ErrorReporter;
 import oberlin.builder.scanner.*;
 import oberlin.builder.parser.*;
 import oberlin.builder.parser.ast.*;
 
 public abstract class Builder {
 	private Logger logger = Logger.getLogger("Builder");
+	private ErrorReporter reporter = new ErrorReporter();
 	private Scanner<?> scanner = new NullaryScanner();
 	private Parser<?> parser;
+	private ContextAnalyzer contextAnalyzer = new NullaryChecker(reporter);
 	
 	public Object build(String code) throws BuilderException {
 		List<AST> tokens = (List<AST>) scanner.apply(new Terminal(code, new SourcePosition()));
@@ -34,6 +38,10 @@ public abstract class Builder {
 		
 		//NOTE: This is technically an exclusive part of the algebra builder. It should be abstracted out.
 		AST program = parser.parse(Program.class);
+		
+		if(reporter.errorCount() != 0) {
+			contextAnalyzer.check(program);	//Check program for sensible format
+		}
 		
 		//DEBUG
 		analyzeTree(program);
@@ -98,6 +106,22 @@ public abstract class Builder {
 		this.parser = parser;
 	}
 	
+	public ErrorReporter getReporter() {
+		return reporter;
+	}
+
+	public void setReporter(ErrorReporter reporter) {
+		this.reporter = reporter;
+	}
+
+	public ContextAnalyzer getContextAnalyzer() {
+		return contextAnalyzer;
+	}
+
+	public void setContextAnalyzer(ContextAnalyzer contextAnalyzer) {
+		this.contextAnalyzer = contextAnalyzer;
+	}
+
 	//DEBUG
 	private void analyzeTree(AST ast) {
 		try {
