@@ -12,7 +12,7 @@ import oberlin.builder.visitor.Visitor;
  * which can rarely be adequately described with a simple true/false binary value. It 
  * might be better to return a mapping.
  */
-public abstract class Context implements Visitor<ContextAnalyzer<?>, Boolean> {
+public abstract class Context implements Visitor<ContextAnalyzer<?>, Map<ContextProperty, ?>> {
 
 	public Context() {
 	}
