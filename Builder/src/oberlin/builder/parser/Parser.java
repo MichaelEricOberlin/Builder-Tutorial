@@ -18,7 +18,7 @@ import oberlin.builder.visitor.Visitor;
  * @param <V> the visitor type that the parser uses for creating nonterminal nodes
  * @param <P> the target class for the parsing, intended to be the root of the produced syntax tree
  */
-public abstract class Parser<V extends Visitor> {
+public abstract class Parser<V extends Visitor<Parser<?>, AST>> {
 	//Don't have a scanner, did that all at once in the beginning. So,
 	//keep a List<AST> on hand instead.
 	

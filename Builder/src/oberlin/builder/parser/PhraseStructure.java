@@ -6,5 +6,5 @@ import oberlin.builder.visitor.Visitor;
 
 import java.util.*;
 
-public interface PhraseStructure extends Visitor {
+public interface PhraseStructure extends Visitor<Parser<?>, AST> {
 }

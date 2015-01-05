@@ -17,7 +17,7 @@ public abstract class Builder {
 	private ErrorReporter reporter = new ErrorReporter();
 	private Scanner<?> scanner = new NullaryScanner();
 	private Parser<?> parser;
-	private ContextAnalyzer contextAnalyzer = new NullaryChecker(reporter);
+	private ContextAnalyzer contextAnalyzer = new NullaryContextAnalyzer(reporter);
 	
 	public Object build(String code) throws BuilderException {
 		List<AST> tokens = (List<AST>) scanner.apply(new Terminal(code, new SourcePosition()));
