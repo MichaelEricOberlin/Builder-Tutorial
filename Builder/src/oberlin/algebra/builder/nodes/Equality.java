@@ -12,12 +12,24 @@ import oberlin.builder.visitor.Visitor;
 
 public class Equality extends NonTerminal {
 	
+	private final Operation leftOperation;
+	private final Equator equator;
+	private final Operation rightOperation;
+	
 	public Equality(SourcePosition position, AST...astList) {
 		super(position, astList);
+		
+		leftOperation = (Operation)astList[0];
+		equator = (Equator)astList[1];
+		rightOperation = (Operation)astList[2];
 	}
 	
 	public Equality(SourcePosition position, List<AST> astList) {
 		super(position, astList);
+		
+		leftOperation = (Operation)astList.get(0);
+		equator = (Equator)astList.get(1);
+		rightOperation = (Operation)astList.get(2);
 	}
 	
 	public List<Class<? extends AST>> getExpectedASTTypes() {

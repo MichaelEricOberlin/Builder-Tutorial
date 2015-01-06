@@ -55,6 +55,7 @@ public enum AlgebraicSpelling implements TerminalSpelling {
 
 			@Override
 			public Nominal getTerminal(String spelling, SourcePosition position) {
+				System.out.println("New nominal");
 				return new Nominal(spelling, position);
 			}
 			
@@ -63,6 +64,7 @@ public enum AlgebraicSpelling implements TerminalSpelling {
 
 			@Override
 			public Numeric getTerminal(String spelling, SourcePosition position) {
+				System.out.println("New numeric");
 				return new Numeric(spelling, position);
 			}
 			

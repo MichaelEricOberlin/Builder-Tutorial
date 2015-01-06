@@ -22,6 +22,10 @@ public class AlgebraicContext extends Context {
 
 			@Override
 			public Map<ContextProperty, ?> apply(ContextAnalyzer<?> t, SourcePosition u) {
+				/*
+				 * Rule: Ensure that what is on the left hand side and what is on the right
+				 * hand side follow the rule of the Equator; or, report an error.
+				 */
 				// TODO Auto-generated method stub
 				return null;
 			}
