@@ -11,16 +11,16 @@ import oberlin.builder.reporter.ErrorReporter;
 import oberlin.builder.visitor.NullaryVisitor;
 import oberlin.builder.visitor.Visitor;
 
-public class NullaryContextAnalyzer extends ContextAnalyzer<NullaryVisitor> {
+public class NullaryContextAnalyzer extends ContextAnalyzer<NullaryContext> {
 
-	NullaryVisitor visitor = new NullaryVisitor();
+	NullaryContext visitor = new NullaryContext();
 	
 	public NullaryContextAnalyzer(ErrorReporter reporter) {
 		super(reporter);
 	}
 
 	@Override
-	public NullaryVisitor getVisitor() {
+	public NullaryContext getVisitor() {
 		return visitor;
 	}
 

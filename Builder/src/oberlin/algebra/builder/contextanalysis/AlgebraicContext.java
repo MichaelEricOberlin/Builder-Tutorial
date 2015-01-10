@@ -15,17 +15,23 @@ import oberlin.builder.visitor.Visitor;
 
 public class AlgebraicContext extends Context {
 
-	private Map<Class<? extends AST>, BiFunction<ContextAnalyzer<?>, SourcePosition, ? extends Map<ContextProperty, ?>>>
+	private Map<Class<? extends AST>, BiFunction<AST, SourcePosition, ? extends Map<ContextProperty, ?>>>
 		map = new HashMap<>();
 	{
-		map.put(Equality.class, new BiFunction<ContextAnalyzer<?>, SourcePosition, Map<ContextProperty, ?>>(){
+		map.put(Equality.class, new BiFunction<AST, SourcePosition, Map<ContextProperty, ?>>(){
 
 			@Override
-			public Map<ContextProperty, ?> apply(ContextAnalyzer<?> t, SourcePosition u) {
+			public Map<ContextProperty, ?> apply(AST ast, SourcePosition position) {
 				/*
 				 * Rule: Ensure that what is on the left hand side and what is on the right
 				 * hand side follow the rule of the Equator; or, report an error.
 				 */
+				
+				/*
+				 * First, get a handle on the token
+				 */
+				
+				
 				// TODO Auto-generated method stub
 				return null;
 			}
@@ -37,7 +43,7 @@ public class AlgebraicContext extends Context {
 	}
 
 	@Override
-	public Map<Class<? extends AST>, BiFunction<ContextAnalyzer<?>, SourcePosition, ? extends Map<ContextProperty, ?>>> getHandlerMap() {
+	public Map<Class<? extends AST>, BiFunction<AST, SourcePosition, ? extends Map<ContextProperty, ?>>> getHandlerMap() {
 		return map;
 	}
 
